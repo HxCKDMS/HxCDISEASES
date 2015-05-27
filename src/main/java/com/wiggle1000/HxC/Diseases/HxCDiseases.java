@@ -37,7 +37,7 @@ public class HxCDiseases
     	//FLU
     	SwineFlu = new ItemVial("Swine Flu",new Potion[]{Potion.digSlowdown,Potion.confusion,Potion.poison,Potion.weakness,Potion.hunger,Potion.moveSlowdown}, 10000);
     	
-    	
+
     	//REGISTER-------------------------------
     	GameRegistry.registerItem(SwineFlu, "vialswineflu");
     }
