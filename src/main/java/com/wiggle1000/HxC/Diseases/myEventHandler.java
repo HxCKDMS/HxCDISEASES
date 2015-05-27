@@ -6,6 +6,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
@@ -23,10 +24,10 @@ public class myEventHandler {
                 if(player.worldObj.rand.nextInt(250)==1){
                     player.attackEntityFrom(new DamageSource("sflu").setDamageBypassesArmor(), 1);
                 }
-                if(player.worldObj.rand.nextInt(1)==1) {
+                if(player.worldObj.rand.nextInt(Config.vomitChance+1)==1) {
                     player.playSound("hxcdiseases:vomit", 1, 1);
-                    for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting+1);i++) {
-                        player.worldObj.spawnParticle("slime", player.posX, player.getEyeHeight(), player.posZ, 0,0,0);
+                    for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting+1)*Config.uberVomit;i++) {
+                        player.worldObj.spawnParticle("slime", player.posX, player.posY+player.getEyeHeight(), player.posZ, 0,0,0);
                     }
                 }
                 if(player.worldObj.rand.nextInt(900)==1) {
@@ -35,6 +36,24 @@ public class myEventHandler {
                 if(player.worldObj.rand.nextInt(900)==1) {
                     player.playSound("hxcdiseases:cough2", 1, 1);
                 }
+                if(player.worldObj.rand.nextInt(9000)==1) {
+                    disableDisease(player,"Swine Flu");
+                }
+            }
+        }
+    }
+
+    public void disableDisease(EntityPlayer player, String disease){
+        if(!player.worldObj.isRemote) {
+            String UUID = player.getUniqueID().toString();
+            File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
+            player.addChatMessage(new ChatComponentText("You no longer have '" + disease + "'!"));
+            NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+            try {
+                Diseases.setBoolean(disease, false);
+                NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
