@@ -57,7 +57,7 @@ public class ItemVial extends ItemFood{
 		applyDisease(other);
 		return true;
 	}
-	//keldon is an ass
+	//DrKeldon is a donkey
 	public void applyDisease(Entity player){
 		if(!player.worldObj.isRemote){
 			if(player instanceof EntityPlayer){
