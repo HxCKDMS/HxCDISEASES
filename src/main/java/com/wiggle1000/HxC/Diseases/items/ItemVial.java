@@ -1,29 +1,28 @@
 package com.wiggle1000.HxC.Diseases.items;
 
+import HxCKDMS.HxCCore.Handlers.NBTFileIO;
+import HxCKDMS.HxCCore.HxCCore;
 import com.wiggle1000.HxC.Diseases.HxCDiseases;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+
+import java.io.File;
 
 public class ItemVial extends ItemFood{
 	
 
 	public String diseasename = "Default Disease";
-	public Potion[] effects;
-	public int duration = 120;
 	
-	public ItemVial(String _diseasename, Potion[] _effects, int _duration){
+	public ItemVial(String _diseasename, int _duration){
 		super(0,false);
 		this.diseasename = _diseasename;
-		this.effects = _effects;
-		this.duration = _duration;
 		this.setCreativeTab(HxCDiseases.tabDiseases);
 		this.setAlwaysEdible();
 		this.setUnlocalizedName("vial_"+diseasename.replace(" ", "").toLowerCase());
@@ -49,17 +48,18 @@ public class ItemVial extends ItemFood{
 
 	public void applyDisease(Entity player){
 		if(!player.worldObj.isRemote){
-			if(player instanceof EntityPlayer){
+			if(player instanceof EntityPlayerMP){
+				String UUID = player.getUniqueID().toString();
+				File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
 				((EntityPlayer)player).addChatMessage(new ChatComponentText("You now have '"+this.diseasename+"'!"));
-			}
-			if(player instanceof EntityLiving){
-				for(Potion p: effects){
-					((EntityLiving)player).addPotionEffect(new PotionEffect(p.id, duration, 1));
+				NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+				try {
+					Diseases.setBoolean(this.diseasename, true);
+					NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			}else if(player instanceof EntityPlayer){
-				for(Potion p: effects){
-					((EntityPlayer)player).addPotionEffect(new PotionEffect(p.id, duration, 1));
-				}
+				//NBTTagCompound Disease = Diseases.getCompoundTag( this.diseasename);
 			}
 		}
 	}

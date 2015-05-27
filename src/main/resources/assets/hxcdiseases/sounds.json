@@ -1,0 +1,29 @@
+{
+    "vomit": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "vomit",
+                "stream": false
+            }
+        ]
+    },
+	"cough": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "cough",
+                "stream": false
+            }
+        ]
+    },
+	"cough2": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "cough2",
+                "stream": false
+            }
+        ]
+    }
+}

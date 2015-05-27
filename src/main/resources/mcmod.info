@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "hxcdiseases",
+  "name": "HxC-Diseases",
+  "description": "STDs! GOTTA CATCH 'EM ALL!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["wiggle1000"],
+  "credits": "ME! (Oh, and other HxC people..whatever.)",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
