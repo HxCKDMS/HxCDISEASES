@@ -25,7 +25,6 @@ public class ItemVial extends ItemFood{
 		this.effects = _effects;
 		this.duration = _duration;
 		this.setCreativeTab(HxCDiseases.tabDiseases);
-		this.setHasSubtypes(true);
 		this.setAlwaysEdible();
 		this.setUnlocalizedName("vial_"+diseasename.replace(" ", "").toLowerCase());
 		this.setTextureName(diseasename.replace(" ", "").toLowerCase()+"_vial");
