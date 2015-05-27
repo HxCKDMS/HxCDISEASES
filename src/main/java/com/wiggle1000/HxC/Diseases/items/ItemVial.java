@@ -1,24 +1,14 @@
 package com.wiggle1000.HxC.Diseases.items;
 
-import java.util.List;
-
 import com.wiggle1000.HxC.Diseases.HxCDiseases;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionAttackDamage;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
@@ -57,7 +47,7 @@ public class ItemVial extends ItemFood{
 		applyDisease(other);
 		return true;
 	}
-	//DrKeldon is a donkey
+
 	public void applyDisease(Entity player){
 		if(!player.worldObj.isRemote){
 			if(player instanceof EntityPlayer){
@@ -74,11 +64,4 @@ public class ItemVial extends ItemFood{
 			}
 		}
 	}
-	@Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs creativeTabs, List list){
-        for(int i = 0; i < 9; i++){
-            list.add(new ItemStack(item, 1, i));
-        }
-    }
 }
