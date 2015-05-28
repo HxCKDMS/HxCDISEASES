@@ -1,3 +1,3 @@
 # HxCDISEASES
 Adds diseases, illnesses, and other ailments.
-NOW WITH MORE POOTISES!
+NOW WITH MORE TEXTURES!
