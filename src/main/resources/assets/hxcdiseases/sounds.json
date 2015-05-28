@@ -34,5 +34,14 @@
                 "stream": false
             }
         ]
+    },
+	"sneeze": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "sneeze",
+                "stream": false
+            }
+        ]
     }
 }

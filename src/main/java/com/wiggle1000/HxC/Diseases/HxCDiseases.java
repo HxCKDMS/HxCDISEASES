@@ -23,6 +23,7 @@ public class HxCDiseases
 
 	public ItemVial SwineFlu;
 	public ItemVial Ebola;
+	public ItemVial CommonCold;
     
     public static CreativeTabs tabDiseases = new CreativeTabs("tabDiseases") {
 	    @Override
@@ -45,11 +46,14 @@ public class HxCDiseases
 		SwineFlu = new ItemVial("Swine Flu", 10000);
 		//STDs
 		Ebola = new ItemVial("Ebola", 10000);
+		//COMMON SICKNESSES
+		CommonCold = new ItemVial("Common Cold", 10000);
     	
 
     	//REGISTER-------------------------------
 		GameRegistry.registerItem(SwineFlu, "vialswineflu");
 		GameRegistry.registerItem(Ebola, "vialebola");
+		GameRegistry.registerItem(CommonCold, "vialcold");
 
 
 

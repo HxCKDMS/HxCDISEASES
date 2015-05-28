@@ -1,5 +1,7 @@
 item.vial_swineflu.name=Swine Flu Vial
 item.vial_ebola.name=Ebola Vial
+item.vial_commoncold.name=Common Cold Vial
 
 death.attack.sflu=%1$s died from Swine Flu.
 death.attack.ebola=%1$s died from Ebola.
+death.attack.ebola=%1$s died from a Cold.

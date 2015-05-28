@@ -39,7 +39,7 @@ public class myEventHandler {
                     player.attackEntityFrom(new DamageSource("sflu").setDamageBypassesArmor(), 1);
                 }
                 if(player.worldObj.rand.nextInt(Config.vomitChance+1)==1) {
-                   vomit(player);
+                    vomit(player);
                 }
                 if(player.worldObj.rand.nextInt(900)==1) {
                     player.playSound("hxcdiseases:cough", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
@@ -49,6 +49,25 @@ public class myEventHandler {
                 }
                 if(player.worldObj.rand.nextInt(9000)==1) {
                     disableDisease(player,"Swine Flu");
+                }
+            }
+
+            if (diseases.hasKey("Common Cold")&&diseases.getBoolean("Common Cold")){
+                if(player.worldObj.rand.nextInt(8000)==1){
+                    player.attackEntityFrom(new DamageSource("ccold").setDamageBypassesArmor(), 1);
+                }
+                if(player.worldObj.rand.nextInt(900)==1) {
+                    player.playSound("hxcdiseases:cough", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
+                }
+                if(player.worldObj.rand.nextInt(900)==1) {
+                    player.playSound("hxcdiseases:cough2", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
+                }
+                if(player.worldObj.rand.nextInt(300)==1) {
+                    player.playSound("hxcdiseases:sneeze", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/3));
+                    player.addVelocity(0,0.2f,0);
+                }
+                if(player.worldObj.rand.nextInt(9000)==1) {
+                    disableDisease(player,"Common Cold");
                 }
             }
 
@@ -82,6 +101,7 @@ public class myEventHandler {
                     }
                 }
             }
+
             @SuppressWarnings("unchecked")
             List<EntityPlayer> nearPlayers = player.worldObj.getEntitiesWithinAABB(EntityPlayer.class,AABBUtils.getAreaBoundingBox((int) player.posX, (int) player.posY, (int) player.posY, 10));
             for(EntityPlayer curr : nearPlayers){
@@ -98,16 +118,21 @@ public class myEventHandler {
                                 applyDisease(player, "Ebola");
                             }
                             break;
+                        case 2:
+                            if (diseases.hasKey("Common Cold") && diseases.getBoolean("Common Cold")) {
+                                applyDisease(player, "Common Cold");
+                            }
+                            break;
                     }
                 }
 
             }
-            @SuppressWarnings("unchecked")
+           /* @SuppressWarnings("unchecked")
             List<EntityPlayer> personalPlayers = player.worldObj.getEntitiesWithinAABB(EntityPlayer.class,AABBUtils.getAreaBoundingBox((int) player.posX, (int) player.posY, (int) player.posY, 1));
             for(EntityPlayer curr : nearPlayers){
                 if(player.worldObj.rand.nextInt(20000)==1){
                     curr.playSound("hxcdiseases:vomit", 3, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
-                    switch(player.worldObj.rand.nextInt(2)) {
+                    switch(player.worldObj.rand.nextInt(3)) {
                         case 0:
                             if (diseases.hasKey("Swine Flu") && diseases.getBoolean("Swine Flu")) {
                                 applyDisease(player, "Swine Flu");
@@ -118,11 +143,15 @@ public class myEventHandler {
                                 applyDisease(player, "Ebola");
                             }
                             break;
+                        case 2:
+                            if (diseases.hasKey("Common Cold") && diseases.getBoolean("Common Cold")) {
+                                applyDisease(player, "Common Cold");
+                            }
+                            break;
                     }
                 }
 
-            }
-
+            }*/
         }
     }
     @SubscribeEvent
@@ -176,10 +205,10 @@ public class myEventHandler {
         player.playSound("hxcdiseases:vomit", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
         float baseYaw = player.getRotationYawHead()+90;
         float basePitch = -(player.rotationPitch);
-        for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting+1)*Config.uberVomit;i++) {
-            float pitch = basePitch+player.worldObj.rand.nextInt(20)-10;
-            float yaw = baseYaw+player.worldObj.rand.nextInt(20)-10;
-            player.worldObj.spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50)));
+        for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * Config.uberVomit; i++) {
+            float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
+            float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
+            player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50)));
         }
     }
 }
