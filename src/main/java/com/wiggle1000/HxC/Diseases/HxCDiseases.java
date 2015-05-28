@@ -50,6 +50,9 @@ public class HxCDiseases
     	//REGISTER-------------------------------
 		GameRegistry.registerItem(SwineFlu, "vialswineflu");
 		GameRegistry.registerItem(Ebola, "vialebola");
+
+
+
 		MinecraftForge.EVENT_BUS.register(new myEventHandler());
 
 
