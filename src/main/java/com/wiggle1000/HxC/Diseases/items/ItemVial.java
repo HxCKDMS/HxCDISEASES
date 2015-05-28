@@ -25,21 +25,30 @@ public class ItemVial extends ItemFood{
 		this.diseasename = _diseasename;
 		this.setCreativeTab(HxCDiseases.tabDiseases);
 		this.setAlwaysEdible();
-		this.setUnlocalizedName("vial_"+diseasename.replace(" ", "").toLowerCase());
-		this.setTextureName(diseasename.replace(" ", "").toLowerCase()+"_vial");
+		this.setUnlocalizedName("vial_" + diseasename.replace(" ", "").toLowerCase());
+		this.setTextureName(HxCDiseases.MODID+":"+"vial_"+diseasename.replace(" ", "").toLowerCase());
 	}
 
 	@Override
 	public EnumAction getItemUseAction(ItemStack item){
-		return EnumAction.eat;
+		return EnumAction.drink;
 	}
-	
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
+		if(player.capabilities.isCreativeMode) {
+			this.onEaten(stack, world, player);
+			return stack;
+		}else{
+			return super.onItemRightClick(stack,world,player);
+		}
+	}
 	@Override
 	public ItemStack onEaten(ItemStack item, World world, EntityPlayer player){
 		applyDisease(player);
 		return new ItemStack(item.getItem(),item.stackSize-1);
 	}
-	
+
 	@Override
 	public boolean onLeftClickEntity(ItemStack is, EntityPlayer myPlayer, Entity other){
 		applyDisease(other);

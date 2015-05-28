@@ -25,6 +25,16 @@ public class myEventHandler {
         if(event.entityLiving instanceof EntityPlayer){
             EntityPlayer player = (EntityPlayer) event.entityLiving;
 
+            if((player.worldObj.rand.nextInt(80000)==1&&!player.worldObj.isRaining())||(player.worldObj.rand.nextInt(8000)==1&&player.worldObj.isRaining())){
+                applyDisease(player, "Common Cold");
+            }
+            if(player.worldObj.rand.nextInt(100000)==1){
+                applyDisease(player, "Ebola");
+            }
+            if(player.worldObj.rand.nextInt(10000)==1){
+                applyDisease(player, "Swine Flu");
+            }
+
             String UUID = player.getUniqueID().toString();
             File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
             NBTTagCompound diseases;
@@ -39,7 +49,7 @@ public class myEventHandler {
                     player.attackEntityFrom(new DamageSource("sflu").setDamageBypassesArmor(), 1);
                 }
                 if(player.worldObj.rand.nextInt(Config.vomitChance+1)==1) {
-                    vomit(player);
+                    vomit(player,"Swine Flu");
                 }
                 if(player.worldObj.rand.nextInt(900)==1) {
                     player.playSound("hxcdiseases:cough", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
@@ -76,7 +86,7 @@ public class myEventHandler {
                     player.attackEntityFrom(new DamageSource("ebola").setDamageBypassesArmor(), 1);
                 }
                 if(player.worldObj.rand.nextInt(Config.vomitChance+1)==1) {
-                    vomit(player);
+                    vomit(player, "Ebola");
                 }
                 if(player.worldObj.rand.nextInt(900)==1) {
                     player.playSound("hxcdiseases:cough", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
@@ -105,7 +115,7 @@ public class myEventHandler {
             @SuppressWarnings("unchecked")
             List<EntityPlayer> nearPlayers = player.worldObj.getEntitiesWithinAABB(EntityPlayer.class,AABBUtils.getAreaBoundingBox((int) player.posX, (int) player.posY, (int) player.posY, 10));
             for(EntityPlayer curr : nearPlayers){
-                if(player.worldObj.rand.nextInt(20000)==1){
+                if(player.worldObj.rand.nextInt(2000)==1){
                     curr.playSound("hxcdiseases:cough2", 3, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
                     switch(player.worldObj.rand.nextInt(2)) {
                         case 0:
@@ -114,11 +124,6 @@ public class myEventHandler {
                             }
                             break;
                         case 1:
-                            if (diseases.hasKey("Ebola") && diseases.getBoolean("Ebola")) {
-                                applyDisease(player, "Ebola");
-                            }
-                            break;
-                        case 2:
                             if (diseases.hasKey("Common Cold") && diseases.getBoolean("Common Cold")) {
                                 applyDisease(player, "Common Cold");
                             }
@@ -127,38 +132,26 @@ public class myEventHandler {
                 }
 
             }
-           /* @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")
             List<EntityPlayer> personalPlayers = player.worldObj.getEntitiesWithinAABB(EntityPlayer.class,AABBUtils.getAreaBoundingBox((int) player.posX, (int) player.posY, (int) player.posY, 1));
             for(EntityPlayer curr : nearPlayers){
                 if(player.worldObj.rand.nextInt(20000)==1){
                     curr.playSound("hxcdiseases:vomit", 3, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
-                    switch(player.worldObj.rand.nextInt(3)) {
-                        case 0:
-                            if (diseases.hasKey("Swine Flu") && diseases.getBoolean("Swine Flu")) {
-                                applyDisease(player, "Swine Flu");
-                            }
-                            break;
-                        case 1:
-                            if (diseases.hasKey("Ebola") && diseases.getBoolean("Ebola")) {
-                                applyDisease(player, "Ebola");
-                            }
-                            break;
-                        case 2:
-                            if (diseases.hasKey("Common Cold") && diseases.getBoolean("Common Cold")) {
-                                applyDisease(player, "Common Cold");
-                            }
-                            break;
+                    if (diseases.hasKey("Ebola") && diseases.getBoolean("Ebola")) {
+                        applyDisease(player, "Ebola");
                     }
                 }
 
-            }*/
+            }
         }
     }
     @SubscribeEvent
     public void OnLivingDeath(LivingDeathEvent event){
         if(event.entityLiving instanceof EntityPlayer) {
-            disableDisease((EntityPlayer)event.entityLiving,"Ebola", false);
-            disableDisease((EntityPlayer)event.entityLiving,"Swine Flu", false);
+            EntityPlayer player = (EntityPlayer)event.entityLiving;
+            disableDisease(player,"Ebola", false);
+            disableDisease(player,"Swine Flu", false);
+            disableDisease(player,"Common Cold", false);
         }
     }
 
@@ -201,14 +194,14 @@ public class myEventHandler {
         }
     }
 
-    public void vomit(EntityPlayer player){
+    public void vomit(EntityPlayer player, String disease){
         player.playSound("hxcdiseases:vomit", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
         float baseYaw = player.getRotationYawHead()+90;
         float basePitch = -(player.rotationPitch);
         for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * Config.uberVomit; i++) {
             float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
             float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
-            player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50)));
+            player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50), disease));
         }
     }
 }
