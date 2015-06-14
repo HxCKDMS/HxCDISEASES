@@ -1,4 +1,4 @@
-package com.wiggle1000.HxC.Diseases;
+package HxCKDMS.HxCDiseases;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

@@ -1,4 +1,4 @@
-package com.wiggle1000.HxC.Diseases.com.wiggle1000.HxC.Diseases.Entity;
+package HxCKDMS.HxCDiseases.entity;
 
 import HxCKDMS.HxCCore.Handlers.NBTFileIO;
 import HxCKDMS.HxCCore.HxCCore;

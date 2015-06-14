@@ -1,8 +1,8 @@
-package com.wiggle1000.HxC.Diseases.items;
+package HxCKDMS.HxCDiseases.items;
 
 import HxCKDMS.HxCCore.Handlers.NBTFileIO;
 import HxCKDMS.HxCCore.HxCCore;
-import com.wiggle1000.HxC.Diseases.HxCDiseases;
+import HxCKDMS.HxCDiseases.HxCDiseases;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,9 +30,11 @@ public class ItemVial extends ItemFood{
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack item){
-		return EnumAction.drink;
-	}
+	public EnumAction getItemUseAction(ItemStack item){return EnumAction.drink;}
+
+	@Override
+	public int getMaxItemUseDuration(ItemStack par1ItemStack) {return 32;}
+
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
@@ -40,13 +42,15 @@ public class ItemVial extends ItemFood{
 			this.onEaten(stack, world, player);
 			return stack;
 		}else{
-			return super.onItemRightClick(stack,world,player);
+			player.setItemInUse(stack, getMaxItemUseDuration(stack));
+			return stack;
 		}
 	}
+
 	@Override
 	public ItemStack onEaten(ItemStack item, World world, EntityPlayer player){
 		applyDisease(player);
-		return new ItemStack(item.getItem(),item.stackSize-1);
+		return new ItemStack(item.getItem(),item.stackSize - 1);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
-package com.wiggle1000.HxC.Diseases;
+package HxCKDMS.HxCDiseases;
 
-import com.wiggle1000.HxC.Diseases.items.ItemVial;
+import HxCKDMS.HxCDiseases.items.ItemVial;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -17,7 +17,7 @@ import net.minecraftforge.common.config.Configuration;
 @Mod(modid = HxCDiseases.MODID, version = HxCDiseases.VERSION, dependencies = "required-after:HxCCore")
 public class HxCDiseases
 {
-	public static Config Config;
+	public static HxCKDMS.HxCDiseases.Config Config;
     public static final String MODID = "hxcdiseases";
     public static final String VERSION = "1.0";
 
@@ -57,7 +57,7 @@ public class HxCDiseases
 
 
 
-		MinecraftForge.EVENT_BUS.register(new myEventHandler());
+		MinecraftForge.EVENT_BUS.register(new DiseaseHandler());
 
 
     }

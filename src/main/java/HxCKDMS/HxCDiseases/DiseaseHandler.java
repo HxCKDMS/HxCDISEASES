@@ -1,9 +1,9 @@
-package com.wiggle1000.HxC.Diseases;
+package HxCKDMS.HxCDiseases;
 
 import HxCKDMS.HxCCore.Handlers.NBTFileIO;
 import HxCKDMS.HxCCore.HxCCore;
 import HxCKDMS.HxCCore.Utils.AABBUtils;
-import com.wiggle1000.HxC.Diseases.com.wiggle1000.HxC.Diseases.Entity.EntityVomitFX;
+import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import java.io.File;
 import java.util.List;
 
-public class myEventHandler {
+public class DiseaseHandler {
     @SubscribeEvent
     public void OnLivingUpdate(LivingEvent.LivingUpdateEvent event){
         if(event.entityLiving instanceof EntityPlayer){
