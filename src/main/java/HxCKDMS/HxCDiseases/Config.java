@@ -12,7 +12,7 @@ public class Config {
         lookatme = config.getBoolean("LookEbola", "features", false, "Look at me. Look at me. You have Ebola now.");
         uberVomit = config.getInt("VomitParticleAmount", "features", 1, 0, 20, "Enabling this may cause lag - Enable at your own risk");
         vomitChance = config.getInt("VomitChance", "features", 1000, 0, 2000, "Vomit Chance");
-            config.save();
-        }
+        
+        if(config.hasChanged()) config.save();
     }
 }
