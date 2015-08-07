@@ -15,11 +15,14 @@ import java.io.File;
 public class EntityVomitFX extends EntityFX{
 
     public String Disease = "";
-    public EntityVomitFX(World world, double X, double Y, double Z, double mX, double mY, double mZ, String disease) {
+    public EntityPlayer Owner;
+
+    public EntityVomitFX(World world, double X, double Y, double Z, double mX, double mY, double mZ, String disease, EntityPlayer owner) {
         super(world, X, Y, Z, mX, mY, mZ);
         this.particleGravity=0.8f;
         this.setRotation(0, world.rand.nextInt(360));
         this.Disease = disease;
+        this.Owner = owner;
     }
 
     @Override
@@ -33,7 +36,9 @@ public class EntityVomitFX extends EntityFX{
 
     @Override
     public void onCollideWithPlayer(EntityPlayer player){
-        applyDisease(player,Disease); //non-self check unnecessary, player has disease if they make this entity!
+        if(player!=Owner) {
+            applyDisease(player, Disease);
+        }
     }
 
 

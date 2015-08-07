@@ -9,7 +9,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -21,15 +20,15 @@ public class HxCDiseases
     public static final String MODID = "hxcdiseases";
     public static final String VERSION = "1.0";
 
-	public ItemVial SwineFlu;
-	public ItemVial Ebola;
-	public ItemVial CommonCold;
+	public static ItemVial SwineFlu;
+	public static ItemVial Ebola;
+	public static ItemVial CommonCold;
     
     public static CreativeTabs tabDiseases = new CreativeTabs("tabDiseases") {
 	    @Override
 	    @SideOnly(Side.CLIENT)
 	    public Item getTabIconItem() {
-	        return Items.poisonous_potato;
+	        return CommonCold;
 	    }
 	};
 	@EventHandler
@@ -40,7 +39,7 @@ public class HxCDiseases
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-    	
+
     	//DECLARE--------------------------------
     	//FLU
 		SwineFlu = new ItemVial("Swine Flu", 10000);
@@ -48,7 +47,7 @@ public class HxCDiseases
 		Ebola = new ItemVial("Ebola", 10000);
 		//COMMON SICKNESSES
 		CommonCold = new ItemVial("Common Cold", 10000);
-    	
+
 
     	//REGISTER-------------------------------
 		GameRegistry.registerItem(SwineFlu, "vialswineflu");

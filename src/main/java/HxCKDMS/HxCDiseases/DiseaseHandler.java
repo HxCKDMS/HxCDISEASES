@@ -201,7 +201,7 @@ public class DiseaseHandler {
         for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * Config.uberVomit; i++) {
             float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
             float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
-            player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50), disease));
+            player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50), disease, player));
         }
     }
 }
