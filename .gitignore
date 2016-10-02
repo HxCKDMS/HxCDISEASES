@@ -1,0 +1,12 @@
+# Created by .gitignore support plugin (hsz.mobi)
+eclipse
+*.ipr
+*.iml
+*.iws
+.gradle
+.classpath
+.settings
+.project
+.gitattributes
+build
+out

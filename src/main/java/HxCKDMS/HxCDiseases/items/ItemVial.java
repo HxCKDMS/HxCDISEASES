@@ -1,7 +1,7 @@
 package HxCKDMS.HxCDiseases.items;
 
-import HxCKDMS.HxCCore.Handlers.NBTFileIO;
 import HxCKDMS.HxCCore.HxCCore;
+import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
 import HxCKDMS.HxCDiseases.HxCDiseases;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

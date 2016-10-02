@@ -1,8 +1,8 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCCore.Handlers.NBTFileIO;
 import HxCKDMS.HxCCore.HxCCore;
-import HxCKDMS.HxCCore.Utils.AABBUtils;
+import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
+import HxCKDMS.HxCCore.api.Utils.AABBUtils;
 import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
@@ -21,17 +21,16 @@ import java.util.List;
 
 public class DiseaseHandler {
     @SubscribeEvent
-    public void OnLivingUpdate(LivingEvent.LivingUpdateEvent event){
-        if(event.entityLiving instanceof EntityPlayer){
+    public void OnLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+        if (event.entityLiving instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
-
-            if((player.worldObj.rand.nextInt(80000)==1&&!player.worldObj.isRaining())||(player.worldObj.rand.nextInt(8000)==1&&player.worldObj.isRaining())){
+            if ((player.worldObj.rand.nextInt((player.worldObj.isRaining() ? 80000 : 8000)) == 1)) {
                 applyDisease(player, "Common Cold");
             }
-            if(player.worldObj.rand.nextInt(100000)==1){
+            if (player.worldObj.rand.nextInt(100000)==1) {
                 applyDisease(player, "Ebola");
             }
-            if(player.worldObj.rand.nextInt(10000)==1){
+            if (player.worldObj.rand.nextInt(10000)==1) {
                 applyDisease(player, "Swine Flu");
             }
 
@@ -48,7 +47,7 @@ public class DiseaseHandler {
                 if(player.worldObj.rand.nextInt(250)==1){
                     player.attackEntityFrom(new DamageSource("sflu").setDamageBypassesArmor(), 1);
                 }
-                if(player.worldObj.rand.nextInt(Config.vomitChance+1)==1) {
+                if(player.worldObj.rand.nextInt(DiseaseConfig.vomitChance+1)==1) {
                     vomit(player,"Swine Flu");
                 }
                 if(player.worldObj.rand.nextInt(900)==1) {
@@ -85,7 +84,7 @@ public class DiseaseHandler {
                 if(player.worldObj.rand.nextInt(250)==1){
                     player.attackEntityFrom(new DamageSource("ebola").setDamageBypassesArmor(), 1);
                 }
-                if(player.worldObj.rand.nextInt(Config.vomitChance+1)==1) {
+                if(player.worldObj.rand.nextInt(DiseaseConfig.vomitChance+1)==1) {
                     vomit(player, "Ebola");
                 }
                 if(player.worldObj.rand.nextInt(900)==1) {
@@ -94,11 +93,11 @@ public class DiseaseHandler {
                 if(player.worldObj.rand.nextInt(900)==1) {
                     player.playSound("hxcdiseases:cough2", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
                 }
-                if(player.worldObj.rand.nextInt(80000)==1) {
-                    disableDisease(player,"Swine Flu");
+                if(player.worldObj.rand.nextInt(90000)==1) {
+                    disableDisease(player,"Ebola");
                 }
             }else{
-                if(Config.lookatme) {
+                if(DiseaseConfig.lookatme) {
                     EntityLivingBase other = Utils.GetTargetEntityLiving(player.worldObj, player, 10);
                     if(other!=null && other instanceof EntityPlayer) {
                         String OtherUUID = other.getUniqueID().toString();
@@ -113,10 +112,11 @@ public class DiseaseHandler {
             }
 
             @SuppressWarnings("unchecked")
-            List<EntityPlayer> nearPlayers = player.worldObj.getEntitiesWithinAABB(EntityPlayer.class,AABBUtils.getAreaBoundingBox((int) player.posX, (int) player.posY, (int) player.posY, 10));
+            List<EntityPlayer> nearPlayers = player.worldObj.getEntitiesWithinAABB(EntityPlayer.class, AABBUtils.getAreaBoundingBox((int) player.posX, (int) player.posY, (int) player.posY, 10));
             for(EntityPlayer curr : nearPlayers){
                 if(player.worldObj.rand.nextInt(2000)==1){
-                    curr.playSound("hxcdiseases:cough2", 3, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
+                    //curr.playSound("hxcdiseases:cough2", 3, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
+                    player.worldObj.playSoundToNearExcept(null,"hxcdiseases:cough2", 3, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
                     switch(player.worldObj.rand.nextInt(2)) {
                         case 0:
                             if (diseases.hasKey("Swine Flu") && diseases.getBoolean("Swine Flu")) {
@@ -181,9 +181,11 @@ public class DiseaseHandler {
             if(player instanceof EntityPlayerMP){
                 String UUID = player.getUniqueID().toString();
                 File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-                ((EntityPlayer)player).addChatMessage(new ChatComponentText("You now have '"+disease+"'!"));
                 NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
                 try {
+                    if (!Diseases.getBoolean(disease)){
+                        ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
+                    }
                     Diseases.setBoolean(disease, true);
                     NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
                 } catch (Exception e) {
@@ -198,7 +200,7 @@ public class DiseaseHandler {
         player.playSound("hxcdiseases:vomit", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
         float baseYaw = player.getRotationYawHead()+90;
         float basePitch = -(player.rotationPitch);
-        for(int i=0;i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * Config.uberVomit; i++) {
+        for(int i = 0; i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * DiseaseConfig.uberVomit; i++) {
             float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
             float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
             player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50), disease, player));

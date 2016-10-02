@@ -1,7 +1,9 @@
 package HxCKDMS.HxCDiseases.entity;
 
-import HxCKDMS.HxCCore.Handlers.NBTFileIO;
+
 import HxCKDMS.HxCCore.HxCCore;
+import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
+import HxCKDMS.HxCDiseases.DiseaseHandler;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,9 +49,11 @@ public class EntityVomitFX extends EntityFX{
             if(player instanceof EntityPlayerMP){
                 String UUID = player.getUniqueID().toString();
                 File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-                ((EntityPlayer)player).addChatMessage(new ChatComponentText("You now have '"+disease+"'!"));
                 NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
                 try {
+                    if (!Diseases.getBoolean(disease)){
+                        ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
+                    }
                     Diseases.setBoolean(disease, true);
                     NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
                 } catch (Exception e) {

@@ -16,19 +16,17 @@ buildscript {
 }
 
 apply plugin: 'forge'
-
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 version = "1.0"
 group= "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "modid"
 
 minecraft {
-    version = "1.7.10-10.13.3.1407-1.7.10"
+    version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "eclipse"
 }
 
-dependencies {
-    runtime files('HxCCore-1.7.10-1.4-dev.jar')
-}
 
 processResources
 {
