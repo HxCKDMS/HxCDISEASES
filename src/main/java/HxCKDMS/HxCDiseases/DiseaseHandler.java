@@ -165,6 +165,7 @@ public class DiseaseHandler {
             File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
             if(doChat) {
                 player.addChatMessage(new ChatComponentText("You no longer have '" + disease + "'!"));
+                player.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 3);
             }
             NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
             try {
@@ -185,6 +186,7 @@ public class DiseaseHandler {
                 try {
                     if (!Diseases.getBoolean(disease)){
                         ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
+                        player.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 0.8f);
                     }
                     Diseases.setBoolean(disease, true);
                     NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);

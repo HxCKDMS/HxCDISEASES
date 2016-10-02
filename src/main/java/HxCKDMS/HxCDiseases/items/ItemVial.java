@@ -56,6 +56,10 @@ public class ItemVial extends ItemFood{
 	@Override
 	public boolean onLeftClickEntity(ItemStack is, EntityPlayer myPlayer, Entity other){
 		applyDisease(other);
+		if(!myPlayer.capabilities.isCreativeMode) {
+			myPlayer.getHeldItem().stackSize--;
+		}
+		myPlayer.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 1 + ((myPlayer.worldObj.rand.nextFloat() - 0.5f) / 5));
 		return true;
 	}
 

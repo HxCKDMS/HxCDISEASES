@@ -43,5 +43,32 @@
                 "stream": false
             }
         ]
+    },
+    "notify": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "notify",
+                "stream": false
+            }
+        ]
+    },
+    "fart": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "fart",
+                "stream": false
+            }
+        ]
+    },
+    "diarrhea": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "diarrhea",
+                "stream": false
+            }
+        ]
     }
 }
