@@ -1,18 +1,11 @@
 package HxCKDMS.HxCDiseases.entity;
 
 
-import HxCKDMS.HxCCore.HxCCore;
-import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
-import HxCKDMS.HxCDiseases.DiseaseHandler;
+import HxCKDMS.HxCDiseases.Utilities;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-
-import java.io.File;
 
 public class EntityVomitFX extends EntityFX{
 
@@ -45,22 +38,6 @@ public class EntityVomitFX extends EntityFX{
 
 
     public void applyDisease(Entity player, String disease){
-        if(!player.worldObj.isRemote){
-            if(player instanceof EntityPlayerMP){
-                String UUID = player.getUniqueID().toString();
-                File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-                NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
-                try {
-                    if (!Diseases.getBoolean(disease)){
-                        ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
-                    }
-                    Diseases.setBoolean(disease, true);
-                    NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                //NBTTagCompound Disease = Diseases.getCompoundTag( this.diseasename);
-            }
-        }
+        Utilities.applyDisease(player,disease);
     }
 }

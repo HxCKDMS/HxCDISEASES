@@ -6,6 +6,10 @@ import HxCKDMS.HxCCore.api.Configuration.Config;
 public class DiseaseConfig {
     @Config.comment("Look at me. Look at me! You have Ebola now. (Default = false)")
     public static boolean lookatme = false;
+    @Config.comment("Play vomit sound when dropping an item? (Default = false)")
+    public static boolean itemVomit = false;
+    @Config.comment("Fart when crouching? (Default = true)")
+    public static boolean farts = true;
     @Config.comment("Enabling this may cause lag - Enable at your own risk. (Default = 1)")
     public static int uberVomit = 1;
     @Config.comment("Vomit Chance (Default = 1000)")

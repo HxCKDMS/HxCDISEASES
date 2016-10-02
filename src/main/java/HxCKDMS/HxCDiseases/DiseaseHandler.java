@@ -2,27 +2,38 @@ package HxCKDMS.HxCDiseases;
 
 import HxCKDMS.HxCCore.HxCCore;
 import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
-import HxCKDMS.HxCCore.api.Utils.AABBUtils;
 import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import java.io.File;
-import java.util.List;
 
 public class DiseaseHandler {
     @SubscribeEvent
     public void OnLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+
         if (event.entityLiving instanceof EntityPlayerMP) {
+            EntityPlayer player = (EntityPlayer) event.entityLiving;
+            String UUID = player.getUniqueID().toString();
+            File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
+            NBTTagCompound diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+            HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
+                if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
+                    diseaseobj.tick(player);
+                }
+            });
+        }
+
+        /*if (event.entityLiving instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
             if ((player.worldObj.rand.nextInt((player.worldObj.isRaining() ? 80000 : 8000)) == 1)) {
                 applyDisease(player, "Common Cold");
@@ -143,10 +154,27 @@ public class DiseaseHandler {
                 }
 
             }
-        }
+        }*/
     }
+
     @SubscribeEvent
-    public void OnLivingDeath(LivingDeathEvent event){
+    public void ItemTossEvent(ItemTossEvent event) {
+        Utilities.playSoundAtPlayer(event.player,"hxcdiseases:vomit", 3, 1 + ((event.player.worldObj.rand.nextFloat() - 0.5f) / 5));
+    }
+
+
+    @SubscribeEvent
+    public void InputEvent(InputEvent.KeyInputEvent event) {
+        if(Minecraft.getMinecraft().gameSettings.keyBindDrop.getIsKeyPressed()) {
+            HxCDiseases.networkWrapper.sendToServer(new PacketKey(1, Minecraft.getMinecraft().thePlayer.getDisplayName()));
+        }else if(Keybinds.fart.isPressed() ) {
+            HxCDiseases.networkWrapper.sendToServer(new PacketKey(2, Minecraft.getMinecraft().thePlayer.getDisplayName()));
+        }
+       // Utilities.playSoundAtPlayer(event.,"hxcdiseases:vomit", 3, 1 + ((event.player.worldObj.rand.nextFloat() - 0.5f) / 5));
+    }
+
+    @SubscribeEvent
+    public void OnLivingDeath(LivingDeathEvent event) {
         if(event.entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)event.entityLiving;
             disableDisease(player,"Ebola", false);
@@ -159,13 +187,13 @@ public class DiseaseHandler {
         disableDisease(player,disease,true);
     }
 
-    public void disableDisease(EntityPlayer player, String disease, boolean doChat){
+    public void disableDisease(EntityPlayer player, String disease, boolean doChat) {
         if(!player.worldObj.isRemote) {
             String UUID = player.getUniqueID().toString();
             File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
             if(doChat) {
                 player.addChatMessage(new ChatComponentText("You no longer have '" + disease + "'!"));
-                player.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 3);
+                Utilities.playSoundAtPlayer(player, "hxcdiseases:notify", 3, 2 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
             }
             NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
             try {
@@ -177,28 +205,11 @@ public class DiseaseHandler {
         }
     }
 
-    public void applyDisease(Entity player, String disease){
-        if(!player.worldObj.isRemote){
-            if(player instanceof EntityPlayerMP){
-                String UUID = player.getUniqueID().toString();
-                File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-                NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
-                try {
-                    if (!Diseases.getBoolean(disease)){
-                        ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
-                        player.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 0.8f);
-                    }
-                    Diseases.setBoolean(disease, true);
-                    NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                //NBTTagCompound Disease = Diseases.getCompoundTag( this.diseasename);
-            }
-        }
+    public void applyDisease(Entity player, String disease) {
+        Utilities.applyDisease(player,disease);
     }
 
-    public void vomit(EntityPlayer player, String disease){
+    public void vomit(EntityPlayer player, String disease) {
         player.playSound("hxcdiseases:vomit", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
         float baseYaw = player.getRotationYawHead()+90;
         float basePitch = -(player.rotationPitch);

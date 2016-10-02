@@ -1,32 +1,36 @@
 package HxCKDMS.HxCDiseases.items;
 
-import HxCKDMS.HxCCore.HxCCore;
-import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
 import HxCKDMS.HxCDiseases.HxCDiseases;
+import HxCKDMS.HxCDiseases.Utilities;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ItemVial extends ItemFood{
+	@SideOnly(Side.CLIENT)
+	public HashMap<String,IIcon> icons = new HashMap<>();
 	
-
-	public String diseasename = "Default Disease";
-	
-	public ItemVial(String _diseasename, int _duration){
+	public ItemVial(){
 		super(0,false);
-		this.diseasename = _diseasename;
 		this.setCreativeTab(HxCDiseases.tabDiseases);
 		this.setAlwaysEdible();
-		this.setUnlocalizedName("vial_" + diseasename.replace(" ", "").toLowerCase());
-		this.setTextureName(HxCDiseases.MODID+":"+"vial_"+diseasename.replace(" ", "").toLowerCase());
+		this.setUnlocalizedName("vial");
+		//this.setTextureName(HxCDiseases.MODID+":"+"vial_"+diseasename.replace(" ", "").toLowerCase());
+		this.setHasSubtypes(true);
 	}
 
 	@Override
@@ -35,6 +39,43 @@ public class ItemVial extends ItemFood{
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack) {return 32;}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public void getSubItems(Item item, CreativeTabs tab, List list) {
+		List<ItemStack> dgs = new ArrayList<>();
+		HxCDiseases.diseases.keySet().forEach(disease -> {
+			ItemStack stack = new ItemStack(item, 1, 0);
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("disease", disease);
+			stack.setTagCompound(tag);
+			dgs.add(stack);
+		});
+		list.addAll(dgs);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean requiresMultipleRenderPasses() {
+		return true;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(ItemStack stack, int renderPass) {
+		return icons.get(stack.getTagCompound().getString("disease"));
+	}
+
+
+
+	//icons.get(stack.getTagCompound().getString("disease"));
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister iconReg) {
+		HxCDiseases.diseases.keySet().forEach(diseasename-> {
+					icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "vial_" +diseasename.replace(" ", "").toLowerCase()));
+				});
+	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
@@ -48,36 +89,34 @@ public class ItemVial extends ItemFood{
 	}
 
 	@Override
-	public ItemStack onEaten(ItemStack item, World world, EntityPlayer player){
-		applyDisease(player);
-		return new ItemStack(item.getItem(),item.stackSize - 1);
+	public String getUnlocalizedName(ItemStack itemStack) {
+		return  "item.vial_" +itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
+	}
+
+
+
+	@Override
+	public ItemStack onEaten(ItemStack itemStack, World world, EntityPlayer player){
+		String disease = itemStack.getTagCompound().getString("disease");
+		if(applyDisease(player, disease)) {
+			return player.inventory.decrStackSize(player.inventory.currentItem,1);
+		}
+		return itemStack;
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack is, EntityPlayer myPlayer, Entity other){
-		applyDisease(other);
-		if(!myPlayer.capabilities.isCreativeMode) {
-			myPlayer.getHeldItem().stackSize--;
+	public boolean onLeftClickEntity(ItemStack itemStack, EntityPlayer myPlayer, Entity other){
+		String disease = itemStack.getTagCompound().getString("disease");
+		if(applyDisease(other, disease)) {
+			if (!myPlayer.capabilities.isCreativeMode) {
+				myPlayer.inventory.decrStackSize(myPlayer.inventory.currentItem, 1);
+			}
+			Utilities.playSoundAtPlayer(myPlayer, "hxcdiseases:notify", 3, 1 + ((itemRand.nextFloat() - 0.5f) / 5));
 		}
-		myPlayer.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 1 + ((myPlayer.worldObj.rand.nextFloat() - 0.5f) / 5));
 		return true;
 	}
 
-	public void applyDisease(Entity player){
-		if(!player.worldObj.isRemote){
-			if(player instanceof EntityPlayerMP){
-				String UUID = player.getUniqueID().toString();
-				File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-				((EntityPlayer)player).addChatMessage(new ChatComponentText("You now have '"+this.diseasename+"'!"));
-				NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
-				try {
-					Diseases.setBoolean(this.diseasename, true);
-					NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				//NBTTagCompound Disease = Diseases.getCompoundTag( this.diseasename);
-			}
-		}
+	public boolean applyDisease(Entity player, String disease){
+		return Utilities.applyDisease(player,disease);
 	}
 }
