@@ -16,7 +16,19 @@ public class Disease {
     public void tick(EntityPlayer player)
     {
         Arrays.stream(symptoms).forEach(symptom-> {
-            symptom.call(player);
+            symptom.tick(player);
+        });
+    }
+    public void remove(EntityPlayer player)
+    {
+        Arrays.stream(symptoms).forEach(symptom-> {
+            symptom.remove(player);
+        });
+    }
+    public void apply(EntityPlayer player)
+    {
+        Arrays.stream(symptoms).forEach(symptom-> {
+            symptom.apply(player);
         });
     }
 

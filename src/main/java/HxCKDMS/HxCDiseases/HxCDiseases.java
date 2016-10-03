@@ -42,6 +42,7 @@ public class HxCDiseases
 		diseases.put("Bronchitis", new Disease(new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(103)}));
 		diseases.put("Ebola", new Disease(new Symptom[]{new Nausea(), new Coughing(), new Coughing(), new ImparedVision()}));
 		diseases.put("Common Cold", new Disease(new Symptom[]{new Sneezes(), new Coughing()}));
+		diseases.put("Zombie Flu", new Disease(new Symptom[]{new ImparedVision(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108)}));
 	}
 
 	public static ItemVial vial;

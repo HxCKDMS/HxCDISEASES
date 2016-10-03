@@ -6,18 +6,27 @@ import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import java.io.File;
 
 public class DiseaseHandler {
+
+    @SubscribeEvent
+    public void LivingAttack(LivingAttackEvent event) {
+        if(event.entityLiving instanceof EntityPlayer && event.source.getEntity() instanceof EntityZombie){
+            applyDisease((EntityPlayer)event.entityLiving, "Zombie Flu");
+        }
+    }
+
     @SubscribeEvent
     public void OnLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 
@@ -205,7 +214,7 @@ public class DiseaseHandler {
         }
     }
 
-    public void applyDisease(Entity player, String disease) {
+    public void applyDisease(EntityPlayer player, String disease) {
         Utilities.applyDisease(player,disease);
     }
 

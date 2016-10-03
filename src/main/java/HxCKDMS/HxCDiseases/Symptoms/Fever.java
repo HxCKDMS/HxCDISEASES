@@ -10,20 +10,26 @@ import net.minecraft.entity.player.EntityPlayer;
 public class Fever implements Symptom{
     float temperature = 98.7f;
     int counter = 1;
+    IAttributeInstance ph;
+    AttributeModifier HealthBuff;
     public Fever(float temp){
         temperature = temp;
     }
-
     @Override
-    public void call(EntityPlayer player) {
+    public void tick(EntityPlayer player) {
         counter++;
-        IAttributeInstance ph = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
-        AttributeModifier HealthBuff = new AttributeModifier(HxCDiseases.feverHealthUUID, "Fever", -((temperature-100)/10F), 1);
+    }
+    @Override
+    public void remove(EntityPlayer player) {
         ph.removeModifier(HealthBuff);
-        ph.applyModifier(HealthBuff);
-        if(player.getHealth()<=1){
-            player.onDeath(HxCDiseases.fever);
-        }
     }
 
+    @Override
+    public void apply(EntityPlayer player) {
+        ph = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
+        IAttributeInstance ph = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
+        HealthBuff = new AttributeModifier(HxCDiseases.feverHealthUUID, "Fever", -((temperature-100)/10F), 1);
+        ph.removeModifier(HealthBuff);
+        ph.applyModifier(HealthBuff);
+    }
 }

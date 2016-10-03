@@ -3,5 +3,7 @@ package HxCKDMS.HxCDiseases.Symptoms;
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface Symptom {
-    void call(EntityPlayer player);
+    void tick(EntityPlayer player);
+    void remove(EntityPlayer player);
+    void apply(EntityPlayer player);
 }

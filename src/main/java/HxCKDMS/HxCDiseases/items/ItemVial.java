@@ -99,7 +99,7 @@ public class ItemVial extends ItemFood{
 	public ItemStack onEaten(ItemStack itemStack, World world, EntityPlayer player){
 		String disease = itemStack.getTagCompound().getString("disease");
 		if(applyDisease(player, disease)) {
-			return player.inventory.decrStackSize(player.inventory.currentItem,1);
+			return player.inventory.decrStackSize(player.inventory.currentItem,itemStack.stackSize-1);
 		}
 		return itemStack;
 	}
