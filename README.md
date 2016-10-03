@@ -1,1 +1,3 @@
-![alt tag](http://i623.photobucket.com/albums/tt319/Armand_1986/SHUT_DOWN_EVERYTHING_by_BrunowskiSigs.jpg)
+<title>HxCDiseases</title>
+
+A WIP mod that adds various diseases, disorders, and viruses that your player can contract.
