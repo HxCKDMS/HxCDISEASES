@@ -37,6 +37,7 @@ public class HxCDiseases
 	public static DamageSource fever;
 
 	public static HashMap<String, Disease> diseases = new HashMap<>();
+
 	static {
 		diseases.put("Inner Ear Infection", new Disease(new Symptom[]{new Nausea(), new Instability(), new Fatigue()}));
 		diseases.put("Swine Flu", new Disease(new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)}));

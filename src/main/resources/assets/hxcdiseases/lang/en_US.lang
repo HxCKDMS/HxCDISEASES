@@ -3,6 +3,7 @@ item.vial_ebola.name=Ebola Vial
 item.vial_commoncold.name=Common Cold Vial
 item.vial_bronchitis.name=Bronchitis Vial
 item.vial_zombieflu.name=Zombie Flu
+item.vial_innerearinfection.name=Inner Ear Infection
 
 death.attack.sickness.fever=%1$s died of a fever.
 itemGroup.tabDiseases=HxC Diseases

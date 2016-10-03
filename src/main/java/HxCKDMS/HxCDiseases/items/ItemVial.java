@@ -73,7 +73,7 @@ public class ItemVial extends ItemFood{
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconReg) {
 		HxCDiseases.diseases.keySet().forEach(diseasename-> {
-					icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "vial_" +diseasename.replace(" ", "").toLowerCase()));
+					icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "disease_" +diseasename.replace(" ", "").toLowerCase()));
 				});
 	}
 
