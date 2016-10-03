@@ -38,11 +38,12 @@ public class HxCDiseases
 
 	public static HashMap<String, Disease> diseases = new HashMap<>();
 	static {
-		diseases.put("Swine Flu", new Disease(new Symptom[]{new DizzySpells(),new Sneezes()}));
-		diseases.put("Bronchitis", new Disease(new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(103)}));
-		diseases.put("Ebola", new Disease(new Symptom[]{new Nausea(), new Coughing(), new Coughing(), new ImparedVision()}));
-		diseases.put("Common Cold", new Disease(new Symptom[]{new Sneezes(), new Coughing()}));
-		diseases.put("Zombie Flu", new Disease(new Symptom[]{new ImparedVision(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108)}));
+		diseases.put("Inner Ear Infection", new Disease(new Symptom[]{new Nausea(), new Instability(), new Fatigue()}));
+		diseases.put("Swine Flu", new Disease(new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)}));
+		diseases.put("Bronchitis", new Disease(new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)}));
+		diseases.put("Ebola", new Disease(new Symptom[]{new Nausea(), new Coughing(), new Coughing(), new ImparedVision(), new Fatigue(), new Fever(107)}));
+		diseases.put("Common Cold", new Disease(new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}));
+		diseases.put("Zombie Flu", new Disease(new Symptom[]{new ImparedVision(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue()}));
 	}
 
 	public static ItemVial vial;
