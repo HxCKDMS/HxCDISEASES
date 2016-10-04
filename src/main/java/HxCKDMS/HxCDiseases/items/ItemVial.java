@@ -23,7 +23,7 @@ import java.util.List;
 public class ItemVial extends ItemFood{
 	@SideOnly(Side.CLIENT)
 	public HashMap<String,IIcon> icons = new HashMap<>();
-	
+
 	public ItemVial(){
 		super(0,false);
 		this.setCreativeTab(HxCDiseases.tabDiseases);
@@ -65,8 +65,6 @@ public class ItemVial extends ItemFood{
 		return icons.get(stack.getTagCompound().getString("disease"));
 	}
 
-
-
 	//icons.get(stack.getTagCompound().getString("disease"));
 
 	@Override
@@ -90,10 +88,8 @@ public class ItemVial extends ItemFood{
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
-		return  "item.vial_" +itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
+		return  "item.disease_" +itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
 	}
-
-
 
 	@Override
 	public ItemStack onEaten(ItemStack itemStack, World world, EntityPlayer player){

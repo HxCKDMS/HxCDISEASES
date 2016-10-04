@@ -10,7 +10,6 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -184,34 +183,21 @@ public class DiseaseHandler {
 
     @SubscribeEvent
     public void OnLivingDeath(LivingDeathEvent event) {
-        if(event.entityLiving instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer)event.entityLiving;
-            disableDisease(player,"Ebola", false);
-            disableDisease(player,"Swine Flu", false);
-            disableDisease(player,"Common Cold", false);
+        if (event.entityLiving instanceof EntityPlayerMP) {
+            EntityPlayer player = (EntityPlayer) event.entityLiving;
+            String UUID = player.getUniqueID().toString();
+            File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
+            NBTTagCompound diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+            HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
+                if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
+                    disableDisease(player,diseasename);
+                }
+            });
         }
     }
 
     public void disableDisease(EntityPlayer player, String disease) {
-        disableDisease(player,disease,true);
-    }
-
-    public void disableDisease(EntityPlayer player, String disease, boolean doChat) {
-        if(!player.worldObj.isRemote) {
-            String UUID = player.getUniqueID().toString();
-            File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-            if(doChat) {
-                player.addChatMessage(new ChatComponentText("You no longer have '" + disease + "'!"));
-                Utilities.playSoundAtPlayer(player, "hxcdiseases:notify", 3, 2 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
-            }
-            NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
-            try {
-                Diseases.setBoolean(disease, false);
-                NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        Utilities.removeDisease(player,disease);
     }
 
     public void applyDisease(EntityPlayer player, String disease) {

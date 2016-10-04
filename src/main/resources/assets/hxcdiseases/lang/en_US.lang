@@ -1,9 +1,9 @@
-item.vial_swineflu.name=Swine Flu Vial
-item.vial_ebola.name=Ebola Vial
-item.vial_commoncold.name=Common Cold Vial
-item.vial_bronchitis.name=Bronchitis Vial
-item.vial_zombieflu.name=Zombie Flu
-item.vial_innerearinfection.name=Inner Ear Infection
+item.disease_swineflu.name=Swine Flu Vial
+item.disease_ebola.name=Ebola Vial
+item.disease_commoncold.name=Common Cold Vial
+item.disease_bronchitis.name=Bronchitis Vial
+item.disease_zombieflu.name=Zombie Flu
+item.disease_innerearinfection.name=Inner Ear Infection
 
 death.attack.sickness.fever=%1$s died of a fever.
 itemGroup.tabDiseases=HxC Diseases
