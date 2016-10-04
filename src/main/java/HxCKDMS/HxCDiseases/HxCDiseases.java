@@ -14,6 +14,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,6 +40,8 @@ public class HxCDiseases
 	public static HashMap<String, Disease> diseases = new HashMap<>();
 
 	static {
+		diseases.put("Vial", null);
+		diseases.put("EyeDropper", null);
 		diseases.put("Inner Ear Infection", new Disease(new Symptom[]{new Nausea(), new Instability(), new Fatigue()}));
 		diseases.put("Swine Flu", new Disease(new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)}));
 		diseases.put("Bronchitis", new Disease(new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)}));
@@ -98,7 +101,21 @@ public class HxCDiseases
 
 		MinecraftForge.EVENT_BUS.register(new DiseaseHandler());
 		FMLCommonHandler.instance().bus().register(new DiseaseHandler());
-
+		AddRecipes();
 
     }
+
+	void AddRecipes(){
+		GameRegistry.addShapedRecipe(Utilities.getDiseaseItem("Vial"),
+				"A",
+				"A",
+				'A', "paneGlass");
+		GameRegistry.addShapedRecipe(Utilities.getDiseaseItem("EyeDropper"),
+				" B ",
+				"A A",
+				"AAA",
+				'A', "paneGlass",
+				'B', "cobblestone");
+	}
+
 }

@@ -5,6 +5,7 @@ import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 
@@ -72,6 +73,14 @@ public class Utilities {
             }
         }
         return retval;
+    }
+
+    public static ItemStack getDiseaseItem(String disease){
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("disease",disease);
+        ItemStack itemStack = new ItemStack(HxCDiseases.vial);
+        itemStack.setTagCompound(nbt);
+        return itemStack;
     }
 
     public static void playSoundAtPlayer(EntityPlayer myPlayer, String sound, float volume, float pitch) {

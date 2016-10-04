@@ -4,6 +4,8 @@ item.disease_commoncold.name=Common Cold Vial
 item.disease_bronchitis.name=Bronchitis Vial
 item.disease_zombieflu.name=Zombie Flu
 item.disease_innerearinfection.name=Inner Ear Infection
+item.disease_vial.name=Vial
+item.disease_eyedropper.name=Eye Dropper
 
 death.attack.sickness.fever=%1$s died of a fever.
 itemGroup.tabDiseases=HxC Diseases

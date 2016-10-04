@@ -27,10 +27,10 @@ public class ItemVial extends ItemFood{
 	public ItemVial(){
 		super(0,false);
 		this.setCreativeTab(HxCDiseases.tabDiseases);
-		this.setAlwaysEdible();
 		this.setUnlocalizedName("vial");
 		//this.setTextureName(HxCDiseases.MODID+":"+"vial_"+diseasename.replace(" ", "").toLowerCase());
 		this.setHasSubtypes(true);
+		this.setAlwaysEdible();
 	}
 
 	@Override
@@ -76,14 +76,16 @@ public class ItemVial extends ItemFood{
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
-		if(player.capabilities.isCreativeMode) {
-			this.onEaten(stack, world, player);
-			return stack;
-		}else{
-			player.setItemInUse(stack, getMaxItemUseDuration(stack));
-			return stack;
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		String disease = stack.getTagCompound().getString("disease");
+		if(disease!="Vial"&&disease!="EyeDropper") {
+			if (player.capabilities.isCreativeMode) {
+				this.onEaten(stack, world, player);
+			} else {
+				player.setItemInUse(stack, getMaxItemUseDuration(stack));
+			}
 		}
+		return stack;
 	}
 
 	@Override
@@ -113,6 +115,6 @@ public class ItemVial extends ItemFood{
 	}
 
 	public boolean applyDisease(Entity player, String disease){
-		return Utilities.applyDisease(player,disease);
+		return disease==null?false:Utilities.applyDisease(player,disease);
 	}
 }
