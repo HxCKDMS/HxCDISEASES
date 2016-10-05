@@ -41,6 +41,7 @@ public class HxCDiseases
 
 	static {
 		diseases.put("Vial", null);
+		diseases.put("Syringe", null);
 		diseases.put("EyeDropper", null);
 		diseases.put("Inner Ear Infection", new Disease(new Symptom[]{new Nausea(), new Instability(), new Fatigue()}));
 		diseases.put("Swine Flu", new Disease(new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)}));

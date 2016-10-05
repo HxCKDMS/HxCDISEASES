@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
@@ -79,6 +80,7 @@ public class ItemVial extends ItemFood{
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		String disease = stack.getTagCompound().getString("disease");
 		if(disease == "Syringe"){
+			String mob = stack.getTagCompound().getString("mob");
 
 		}else if(disease != "Vial" && disease != "EyeDropper") {
 			if (player.capabilities.isCreativeMode) {
@@ -107,11 +109,18 @@ public class ItemVial extends ItemFood{
 	@Override
 	public boolean onLeftClickEntity(ItemStack itemStack, EntityPlayer myPlayer, Entity other){
 		String disease = itemStack.getTagCompound().getString("disease");
-		if(applyDisease(other, disease)) {
-			if (!myPlayer.capabilities.isCreativeMode) {
-				myPlayer.inventory.decrStackSize(myPlayer.inventory.currentItem, 1);
+		if(disease == "Syringe"){
+			if( !itemStack.getTagCompound().hasKey("mob") ||  itemStack.getTagCompound().getString("mob")==""){
+				itemStack.getTagCompound().setString("mob",other.getCommandSenderName());
+				myPlayer.addChatMessage(new ChatComponentText("Loaded with: "+other.getCommandSenderName()));
 			}
-			Utilities.playSoundAtPlayer(myPlayer, "hxcdiseases:notify", 3, 1 + ((itemRand.nextFloat() - 0.5f) / 5));
+		}else {
+			if (applyDisease(other, disease)) {
+				if (!myPlayer.capabilities.isCreativeMode) {
+					myPlayer.inventory.decrStackSize(myPlayer.inventory.currentItem, 1);
+				}
+				Utilities.playSoundAtPlayer(myPlayer, "hxcdiseases:notify", 3, 1 + ((itemRand.nextFloat() - 0.5f) / 5));
+			}
 		}
 		return true;
 	}
