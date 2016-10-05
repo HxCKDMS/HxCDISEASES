@@ -113,6 +113,7 @@ public class ItemVial extends ItemFood{
 			if( !itemStack.getTagCompound().hasKey("mob") ||  itemStack.getTagCompound().getString("mob")==""){
 				itemStack.getTagCompound().setString("mob",other.getCommandSenderName());
 				myPlayer.addChatMessage(new ChatComponentText("Loaded with: "+other.getCommandSenderName()));
+				this.setUnlocalizedName(": "+other.getCommandSenderName());
 			}
 		}else {
 			if (applyDisease(other, disease)) {
