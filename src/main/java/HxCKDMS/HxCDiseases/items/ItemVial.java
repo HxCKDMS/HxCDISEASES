@@ -78,7 +78,9 @@ public class ItemVial extends ItemFood{
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		String disease = stack.getTagCompound().getString("disease");
-		if(disease!="Vial"&&disease!="EyeDropper") {
+		if(disease == "Syringe"){
+
+		}else if(disease != "Vial" && disease != "EyeDropper") {
 			if (player.capabilities.isCreativeMode) {
 				this.onEaten(stack, world, player);
 			} else {
@@ -115,6 +117,6 @@ public class ItemVial extends ItemFood{
 	}
 
 	public boolean applyDisease(Entity player, String disease){
-		return disease==null?false:Utilities.applyDisease(player,disease);
+		return disease != null && Utilities.applyDisease(player, disease);
 	}
 }

@@ -14,12 +14,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -106,16 +106,19 @@ public class HxCDiseases
     }
 
 	void AddRecipes(){
-		GameRegistry.addShapedRecipe(Utilities.getDiseaseItem("Vial"),
+		GameRegistry.addRecipe(new ShapedOreRecipe(Utilities.getDiseaseItem("Vial"),
 				"A",
 				"A",
-				'A', "paneGlass");
-		GameRegistry.addShapedRecipe(Utilities.getDiseaseItem("EyeDropper"),
+				'A', "paneGlass"
+		));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Utilities.getDiseaseItem("EyeDropper"),
 				" B ",
 				"A A",
 				"AAA",
 				'A', "paneGlass",
-				'B', "cobblestone");
+				'B', "cobblestone"
+		));
+
 	}
 
 }
