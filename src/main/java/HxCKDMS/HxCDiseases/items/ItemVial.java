@@ -7,6 +7,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -35,6 +37,20 @@ public class ItemVial extends ItemFood{
 	}
 
 	@Override
+	public String getItemStackDisplayName(ItemStack itemStack) {
+		if(itemStack.getTagCompound().getString("disease")=="Full Syringe") {
+			if(itemStack.getTagCompound().hasKey("mob")){
+				return "Syringe: "+itemStack.getTagCompound().getString("mob");
+			}
+		}else if(itemStack.getTagCompound().getString("disease")=="Syringe"){
+			return "Empty Syringe";
+		}else{
+			return super.getItemStackDisplayName(itemStack);
+		}
+		return "Error";
+	}
+
+	@Override
 	public EnumAction getItemUseAction(ItemStack item){return EnumAction.drink;}
 
 	@Override
@@ -50,6 +66,16 @@ public class ItemVial extends ItemFood{
 			tag.setString("disease", disease);
 			stack.setTagCompound(tag);
 			dgs.add(stack);
+		});
+		EntityList.stringToClassMapping.forEach((mob, ent) -> {
+			if(ent instanceof EntityLiving) {
+				ItemStack stack = new ItemStack(item, 1, 0);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setString("disease", "Full Syringe");
+				tag.setString("mob", (String) mob);
+				stack.setTagCompound(tag);
+				dgs.add(stack);
+			}
 		});
 		list.addAll(dgs);
 	}
@@ -72,14 +98,18 @@ public class ItemVial extends ItemFood{
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconReg) {
 		HxCDiseases.diseases.keySet().forEach(diseasename-> {
-					icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "disease_" +diseasename.replace(" ", "").toLowerCase()));
-				});
+			icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "disease_" +diseasename.replace(" ", "").toLowerCase()));
+		});
+		icons.put("Full Syringe", iconReg.registerIcon(HxCDiseases.MODID + ":" + "syringe_blood"));
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		String disease = stack.getTagCompound().getString("disease");
 		if(disease == "Syringe"){
+			String mob = stack.getTagCompound().getString("mob");
+
+		}else if(disease == "Full Syringe"){
 			String mob = stack.getTagCompound().getString("mob");
 
 		}else if(disease != "Vial" && disease != "EyeDropper") {
@@ -111,9 +141,10 @@ public class ItemVial extends ItemFood{
 		String disease = itemStack.getTagCompound().getString("disease");
 		if(disease == "Syringe"){
 			if( !itemStack.getTagCompound().hasKey("mob") ||  itemStack.getTagCompound().getString("mob")==""){
+				itemStack.getTagCompound().setString("disease", "Full Syringe");
 				itemStack.getTagCompound().setString("mob",other.getCommandSenderName());
 				myPlayer.addChatMessage(new ChatComponentText("Loaded with: "+other.getCommandSenderName()));
-				this.setUnlocalizedName(": "+other.getCommandSenderName());
+
 			}
 		}else {
 			if (applyDisease(other, disease)) {
