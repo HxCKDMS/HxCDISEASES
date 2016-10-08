@@ -8,11 +8,15 @@ import java.util.Arrays;
 public class Disease {
 
     private Symptom[] symptoms;
+    public String feeling = "different";
 
     public Disease(Symptom[] symptoms){
         this.symptoms = symptoms;
     }
-
+    public Disease(Symptom[] symptoms, String feeling) {
+        this.symptoms = symptoms;
+        this.feeling = feeling;
+    }
     public void tick(EntityPlayer player)
     {
         Arrays.stream(symptoms).forEach(symptom-> {

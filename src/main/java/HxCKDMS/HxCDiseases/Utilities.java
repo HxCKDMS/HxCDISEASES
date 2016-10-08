@@ -10,10 +10,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class Utilities {
 
 
+    public static HashMap<String, Disease> getPlayerDiseases(EntityPlayer player) {
+        HashMap<String, Disease> cDiseases = new HashMap<>();
+        String UUID = player.getUniqueID().toString();
+        File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
+        NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+        HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
+            if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
+                cDiseases.put(diseasename,diseaseobj);
+            }
+        });
+        return cDiseases;
+    }
     public static boolean applyDisease(Entity player, String disease){
         boolean retval = false;
         if(!player.worldObj.isRemote){
@@ -23,7 +36,7 @@ public class Utilities {
                 NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
                 try {
                     if (!Diseases.getBoolean(disease)){
-                        ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
+                        ((EntityPlayer) player).addChatMessage(new ChatComponentText("You're feeling "+HxCDiseases.diseases.get(disease).feeling));
                         HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
                             if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
                                 diseaseobj.apply((EntityPlayer)player);
