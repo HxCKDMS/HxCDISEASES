@@ -18,6 +18,7 @@ public class Fever implements Symptom{
     @Override
     public void tick(EntityPlayer player) {
         counter++;
+
     }
     @Override
     public void remove(EntityPlayer player) {
@@ -27,7 +28,6 @@ public class Fever implements Symptom{
     @Override
     public void apply(EntityPlayer player) {
         ph = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
-        IAttributeInstance ph = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
         HealthBuff = new AttributeModifier(HxCDiseases.feverHealthUUID, "Fever", -((temperature-100)/10F), 1);
         ph.removeModifier(HealthBuff);
         ph.applyModifier(HealthBuff);

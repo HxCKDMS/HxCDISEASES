@@ -26,7 +26,7 @@ public class Utilities {
                         ((EntityPlayer) player).addChatMessage(new ChatComponentText("You now have '" + disease + "'!"));
                         HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
                             if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
-                                diseaseobj.apply((EntityPlayer)player); ;
+                                diseaseobj.apply((EntityPlayer)player);
                             }
                         });
                         retval = true;
@@ -53,6 +53,7 @@ public class Utilities {
                 NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
                 try {
                     if (Diseases.getBoolean(disease)){
+                        Diseases.setBoolean(disease, false);
                         ((EntityPlayer) player).addChatMessage(new ChatComponentText("You no longer have '" + disease + "'!"));
                         HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
                             if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
@@ -62,13 +63,16 @@ public class Utilities {
                         retval = true;
                         //player.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 0.8f);
                         //player.playSound("hxcdiseases:notify",3, 0.8f);
-                        Utilities.playSoundAtPlayer((EntityPlayer) player, "hxcdiseases:notify", 3, 0.1f + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
+                        Utilities.playSoundAtPlayer((EntityPlayer) player, "hxcdiseases:notify", 3, 2f + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
+                    }else{
+                        System.out.println("DERP!");
                     }
-                    Diseases.setBoolean(disease, false);
                     NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 //NBTTagCompound Disease = Diseases.getCompoundTag( this.diseasename);
             }
         }
