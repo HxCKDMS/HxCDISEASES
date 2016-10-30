@@ -1,5 +1,6 @@
 package HxCKDMS.HxCDiseases.items;
 
+import HxCKDMS.HxCDiseases.Disease;
 import HxCKDMS.HxCDiseases.HxCDiseases;
 import HxCKDMS.HxCDiseases.Utilities;
 import cpw.mods.fml.relauncher.Side;
@@ -8,12 +9,14 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
@@ -40,6 +43,8 @@ public class ItemVial extends ItemFood{
 		if(itemStack.getTagCompound().getString("disease").equals("Full Syringe")) {
 			if (itemStack.getTagCompound().hasKey("mob")) {
 				list.add("Contains: "+itemStack.getTagCompound().getString("mob"));
+			}else if (itemStack.getTagCompound().hasKey("info")) {
+				list.add("Contains: "+itemStack.getTagCompound().getString("info"));
 			}
 		}
 		super.addInformation(itemStack,player,list,someBool);
@@ -106,7 +111,7 @@ public class ItemVial extends ItemFood{
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconReg) {
 		HxCDiseases.diseases.keySet().forEach(diseasename-> {
-			icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "disease_" +diseasename.replace(" ", "").toLowerCase()));
+			icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "" +diseasename.replace(" ", "").toLowerCase()));
 		});
 		icons.put("Full Syringe", iconReg.registerIcon(HxCDiseases.MODID + ":" + "syringe_blood"));
 	}
@@ -128,19 +133,38 @@ public class ItemVial extends ItemFood{
 					player.setItemInUse(stack, getMaxItemUseDuration(stack));
 				}
 			}
-		}else if(disease.equals("Grand Panacea")){
-			if (player.capabilities.isCreativeMode) {
-				this.onEaten(stack, world, player);
-			} else {
-				player.setItemInUse(stack, getMaxItemUseDuration(stack));
+		}else{
+			switch (disease){
+				case "Grand Panacea":
+					if (player.capabilities.isCreativeMode) {
+						this.onEaten(stack, world, player);
+					} else {
+						player.setItemInUse(stack, getMaxItemUseDuration(stack));
+					}
+					break;
+				case "Diagnosis":
+					HashMap<String, Disease> diseases = Utilities.getPlayerDiseases(player);
+					final String[] message = {"You currently have:"};
+					diseases.forEach((dName, dis)->{
+						message[0] += "\n\u00A7e- "+dName + "\n   \u00A77- Making you feel "+dis.feeling;
+					});
+					if(world.isRemote) {
+						ChatComponentText cct = new ChatComponentText("\u00A77[HxCDiseases]> \u00A75[Diagnosis]");
+						ChatStyle chatStyle = new ChatStyle();
+						chatStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(message[0])));
+						cct.setChatStyle(chatStyle);
+						player.addChatComponentMessage(cct);
+					}
+					break;
 			}
+
 		}
 		return stack;
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
-		return  "item.vial_" +itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
+		return  "item." +itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
 	}
 
 	@Override

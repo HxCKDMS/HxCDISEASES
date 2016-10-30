@@ -9,6 +9,7 @@ public class Disease {
 
     private Symptom[] symptoms;
     public String feeling = "different";
+    public int sicknessTicksRemaining = 12000;
 
     public Disease(Symptom[] symptoms){
         this.symptoms = symptoms;
@@ -22,6 +23,11 @@ public class Disease {
         Arrays.stream(symptoms).forEach(symptom-> {
             symptom.tick(player);
         });
+        if(player.isPlayerSleeping()){
+            sicknessTicksRemaining-=5;
+        }else{
+            sicknessTicksRemaining--;
+        }
     }
     public void remove(EntityPlayer player)
     {

@@ -49,12 +49,17 @@ public class ComponentDoctor extends StructureVillagePieces.Village {
 
         for(int w = -1; w < 10; w++){
             for(int w1 = -1; w1 < 11; w1++){
-                this.placeBlockAtCurrentPosition(world, Blocks.log, 0, w, 3, w1, sbb);//Roof
+                this.placeBlockAtCurrentPosition(world, Blocks.wooden_slab, this.getMetadataWithOffset(Blocks.wooden_slab, 8), w, 3, w1, sbb);//Roof
             }
         }
         for(int w = 0; w < 9; w++){
             for(int w1 = 0; w1 < 10; w1++){
                 this.placeBlockAtCurrentPosition(world, Blocks.planks, 0, w, 3, w1, sbb);//Roof
+            }
+        }
+        for(int w = 0; w < 9; w++){
+            for(int w1 = 0; w1 < 10; w1++){
+                this.placeBlockAtCurrentPosition(world, Blocks.wooden_slab, 0, w, 4, w1, sbb);//Roof
             }
         }
 
@@ -144,7 +149,6 @@ public class ComponentDoctor extends StructureVillagePieces.Village {
         }
         this.placeBlockAtCurrentPosition(world, Blocks.fence_gate, this.getMetadataWithOffset(Blocks.fence_gate, 1), 5, 1, 7, sbb);
         this.placeBlockAtCurrentPosition(world, Blocks.fence, 0, 5, 1, 8, sbb);
-        //this.placeBlockAtCurrentPosition(world, Blocks.spaw, 0, 4, 0, 7, sbb);
 
         this.placeBlockAtCurrentPosition(world, Blocks.log, 0, 7, 1, 8, sbb);
         this.placeBlockAtCurrentPosition(world, Blocks.leaves, 0, 7, 2, 8, sbb);

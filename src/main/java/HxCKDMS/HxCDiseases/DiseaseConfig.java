@@ -4,7 +4,7 @@ import HxCKDMS.HxCCore.api.Configuration.Config;
 
 @Config
 public class DiseaseConfig {
-    @Config.comment("Look at me. Look at me! You have Ebola now. (Default = false)")
+    @Config.comment("Look at me! Look at me!! You have Ebola now. (Default = false)")
     public static boolean lookatme = false;
     @Config.comment("Play vomit sound when dropping an item? (Default = false)")
     public static boolean itemVomit = false;

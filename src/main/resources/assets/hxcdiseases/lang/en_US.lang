@@ -1,14 +1,16 @@
-item.vial_swineflu.name=Swine Flu Vial
-item.vial_ebola.name=Ebola Vial
-item.vial_commoncold.name=Common Cold Vial
-item.vial_bronchitis.name=Bronchitis Vial
-item.vial_zombieflu.name=Zombie Flu
-item.vial_innerearinfection.name=Inner Ear Infection
-item.vial_vial.name=Vial
-item.vial_eyedropper.name=Eye Dropper
-item.vial_syringe.name=Syringe
-item.vial_fullsyringe.name=Filled Syringe
-item.vial_grandpanacea.name=Grand Panacea
+item.swineflu.name=Swine Flu Vial
+item.ebola.name=Ebola Vial
+item.commoncold.name=Common Cold Vial
+item.bronchitis.name=Bronchitis Vial
+item.zombieflu.name=Zombie Flu
+item.innerearinfection.name=Inner Ear Infection
+item.vial.name=Vial
+item.eyedropper.name=Eye Dropper
+item.syringe.name=Syringe
+item.fullsyringe.name=Filled Syringe
+item.grandpanacea.name=Grand Panacea
+item.diagnosis.name=Diagnosis
+item.mysteriousgem.name=Mysterious Gem
 
 death.attack.sickness.fever=%1$s died of a fever.
 itemGroup.tabDiseases=HxC Diseases

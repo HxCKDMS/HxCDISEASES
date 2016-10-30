@@ -44,7 +44,8 @@ public class PacketKey implements IMessage {
                 }
             }else if (message.keyid == 2) {
                 if(DiseaseConfig.farts && p != null) {
-                    Utilities.playSoundAtPlayer(p, "hxcdiseases:fart", 3, 1 + ((p.worldObj.rand.nextFloat() - 0.5f) / 2));
+                    float pitch = (90-p.rotationPitch)/90;
+                    Utilities.playSoundAtPlayer(p, "hxcdiseases:fart", 3, pitch);
                 }
             }
             return null;
