@@ -1,7 +1,7 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCCore.HxCCore;
-import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
+import hxckdms.hxccore.libraries.GlobalVariables;
+import hxckdms.hxccore.utilities.HxCPlayerInfoHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,10 +18,10 @@ public class Utilities {
     public static HashMap<String, Disease> getPlayerDiseases(EntityPlayer player) {
         HashMap<String, Disease> cDiseases = new HashMap<>();
         String UUID = player.getUniqueID().toString();
-        File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-        NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+        File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
+        NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases");
         HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
-            if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
+            if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
                 cDiseases.put(diseasename,diseaseobj);
             }
         });
@@ -32,13 +32,13 @@ public class Utilities {
         if(!player.worldObj.isRemote){
             if(player instanceof EntityPlayerMP){
                 String UUID = player.getUniqueID().toString();
-                File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-                NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+                File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
+                NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound((EntityPlayer)player, "Diseases");
                 try {
-                    if (!Diseases.getBoolean(disease)){
+                    if (!diseases.getBoolean(disease)){
                         ((EntityPlayer) player).addChatMessage(new ChatComponentText("You're feeling "+HxCDiseases.diseases.get(disease).feeling));
                         HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
-                            if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
+                            if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
                                 diseaseobj.apply((EntityPlayer)player);
                             }
                         });
@@ -47,8 +47,8 @@ public class Utilities {
                         //player.playSound("hxcdiseases:notify",3, 0.8f);
                         Utilities.playSoundAtPlayer((EntityPlayer) player, "hxcdiseases:notify", 3, 0.1f + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
                     }
-                    Diseases.setBoolean(disease, true);
-                    NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
+                    diseases.setBoolean(disease, true);
+                    HxCPlayerInfoHandler.setTagCompound((EntityPlayer) player, "Diseases", diseases);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -62,14 +62,15 @@ public class Utilities {
         if(!player.worldObj.isRemote){
             if(player instanceof EntityPlayerMP){
                 String UUID = player.getUniqueID().toString();
-                File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-                NBTTagCompound Diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+
+                File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
+                NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound((EntityPlayer)player, "Diseases");
                 try {
-                    if (Diseases.getBoolean(disease)){
-                        Diseases.setBoolean(disease, false);
+                    if (diseases.getBoolean(disease)){
+                        diseases.setBoolean(disease, false);
                         ((EntityPlayer) player).addChatMessage(new ChatComponentText("You no longer have '" + disease + "'!"));
                         HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
-                            if(Diseases.hasKey(diseasename)&&Diseases.getBoolean(diseasename)) {
+                            if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
                                 diseaseobj.remove((EntityPlayer) player);
                             }
                         });
@@ -80,7 +81,7 @@ public class Utilities {
                     }else{
                         System.out.println("DERP!");
                     }
-                    NBTFileIO.setNbtTagCompound(CustomPlayerData, "Diseases", Diseases);
+                    HxCPlayerInfoHandler.setTagCompound((EntityPlayer)player, "Diseases", diseases);
 
                 } catch (Exception e) {
                     e.printStackTrace();

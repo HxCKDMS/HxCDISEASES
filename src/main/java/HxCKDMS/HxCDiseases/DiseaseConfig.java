@@ -1,6 +1,7 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCCore.api.Configuration.Config;
+
+import hxckdms.hxcconfig.Config;
 
 @Config
 public class DiseaseConfig {

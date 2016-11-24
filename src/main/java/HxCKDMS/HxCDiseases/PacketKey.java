@@ -1,10 +1,10 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCCore.HxCCore;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import hxckdms.hxccore.libraries.GlobalVariables;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -36,7 +36,7 @@ public class PacketKey implements IMessage {
         public IMessage onMessage(PacketKey message, MessageContext ctx) {
             EntityPlayer p = null;
             if (!message.name.isEmpty()) {
-                p = HxCCore.server.getEntityWorld().getPlayerEntityByName(message.name);
+                p = GlobalVariables.server.getEntityWorld().getPlayerEntityByName(message.name);
             }
             if (message.keyid == 1) {
                 if(DiseaseConfig.itemVomit && p != null) {

@@ -1,7 +1,5 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCCore.HxCCore;
-import HxCKDMS.HxCCore.api.Configuration.HxCConfig;
 import HxCKDMS.HxCDiseases.Symptoms.*;
 import HxCKDMS.HxCDiseases.Villager.ComponentDoctor;
 import HxCKDMS.HxCDiseases.Villager.TradeHandlerDoctor;
@@ -17,6 +15,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import hxckdms.hxcconfig.HxCConfig;
+import hxckdms.hxccore.libraries.GlobalVariables;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -33,7 +33,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import java.util.HashMap;
 import java.util.UUID;
 
-@Mod(modid = HxCDiseases.MODID, version = HxCDiseases.VERSION, dependencies = "required-after:HxCCore")
+@Mod(modid = HxCDiseases.MODID, version = HxCDiseases.VERSION, dependencies = "required-after:hxccore")
 public class HxCDiseases
 {
 	//public static DiseaseConfig DiseaseConfig;
@@ -89,7 +89,7 @@ public class HxCDiseases
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		//DiseaseConfig = new DiseaseConfig(new Configuration(event.getSuggestedConfigurationFile()));
-		hxCConfig = new HxCConfig(DiseaseConfig.class, "HxCDiseases", HxCCore.HxCConfigDir, "cfg", MODID);
+		hxCConfig = new HxCConfig(DiseaseConfig.class, "HxCDiseases", GlobalVariables.modConfigDir, "cfg", MODID);
 		hxCConfig.initConfiguration();
 		networkWrapper.registerMessage(PacketKey.handler.class, PacketKey.class, 1, Side.SERVER);
 		Keybinds.register();

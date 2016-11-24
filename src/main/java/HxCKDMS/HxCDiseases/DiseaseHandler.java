@@ -1,11 +1,11 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCCore.HxCCore;
-import HxCKDMS.HxCCore.api.Handlers.NBTFileIO;
 import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
+import hxckdms.hxccore.libraries.GlobalVariables;
+import hxckdms.hxccore.utilities.HxCPlayerInfoHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.monster.EntityZombie;
@@ -71,8 +71,8 @@ public class DiseaseHandler {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
 
             String UUID = player.getUniqueID().toString();
-            File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-            NBTTagCompound diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+            File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
+            NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases", new NBTTagCompound());
             HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
                 if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
                     diseaseobj.tick(player);
@@ -128,8 +128,8 @@ public class DiseaseHandler {
         if (event.entityLiving instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
             String UUID = player.getUniqueID().toString();
-            File CustomPlayerData = new File(HxCCore.HxCCoreDir, "HxC-" + UUID + ".dat");
-            NBTTagCompound diseases = NBTFileIO.getNbtTagCompound(CustomPlayerData, "Diseases");
+            File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
+            NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases");
             HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
                 if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
                     disableDisease(player,diseasename);
