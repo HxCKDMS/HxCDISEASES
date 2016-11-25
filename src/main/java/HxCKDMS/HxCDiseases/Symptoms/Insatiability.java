@@ -8,7 +8,7 @@ import net.minecraft.potion.PotionEffect;
 public class Insatiability implements Symptom{
     @Override
     public void tick(EntityPlayer player){
-        player.addPotionEffect(new PotionEffect(Potion.hunger.id,80,5));
+        player.addPotionEffect(new PotionEffect(Potion.hunger.id,80,2));
     }
     @Override
     public void remove(EntityPlayer player) {

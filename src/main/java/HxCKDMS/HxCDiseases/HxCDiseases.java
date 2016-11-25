@@ -33,19 +33,25 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static HxCKDMS.HxCDiseases.Symptoms.Symptom.symptoms;
+
 @Mod(modid = HxCDiseases.MODID, version = HxCDiseases.VERSION, dependencies = "required-after:hxccore")
 public class HxCDiseases
 {
-	//public static DiseaseConfig DiseaseConfig;
-    public static final String MODID = "hxcdiseases";
-    public static final String VERSION = "1.0";
-	public static UUID feverHealthUUID = UUID.fromString("f2b5a521-bca6-43d1-a07e-f2ca9f84f541");
+	public static final String MODID = "hxcdiseases";
+	public static final String VERSION = "1.0";
+	@Mod.Instance(MODID)
+	public static HxCDiseases instance;
 
-	public static int villagerID = 18978;
+	public static final UUID feverHealthUUID = UUID.fromString("f2b5a521-bca6-43d1-a07e-f2ca9f84f541");
+
+	public static final int villagerID = 18978;
 
 	public TradeHandlerDoctor tradeHandlerDoctor;
 	public HxCConfig hxCConfig;
 	public static SimpleNetworkWrapper networkWrapper = new SimpleNetworkWrapper(MODID);
+
+	public static final String[] shaderNames = {"antialias","art","bits","blobs","blobs2","blur","bumpy","color_convolve","deconverge","desaturate","flip","fxaa","green","invert","notch","ntsc","outline","pencil","phosphor","scan_pincushion","sobel","wobble"};
 
 	public static DamageSource fever;
 
@@ -53,18 +59,37 @@ public class HxCDiseases
 	public static HashMap<Class, String> mobs = new HashMap<>();
 
 	static {
+		symptoms.put("Coughing", new Coughing());
+		symptoms.put("DizzySpells", new DizzySpells());
+		symptoms.put("Fatigue", new Fatigue());
+		symptoms.put("Fever", new Fever(99));
+		symptoms.put("FeverI", new Fever(99));
+		symptoms.put("FeverII", new Fever(100));
+		symptoms.put("FeverIII", new Fever(102));
+		symptoms.put("FeverIV", new Fever(105));
+		for (String shader: shaderNames) {
+			symptoms.put("Hallucination_"+shader, new Hallucinations(shader));
+		}
+		symptoms.put("ImpairedVision", new ImparedVision(1));
+		symptoms.put("ImpairedVisionI", new ImparedVision(1));
+		symptoms.put("ImpairedVisionII", new ImparedVision(2));
+		symptoms.put("Insatiability", new Insatiability());
+		symptoms.put("Instability", new Instability());
+		symptoms.put("Nausea", new Nausea());
+		symptoms.put("Sneezes", new Sneezes());
+
 		diseases.put("Vial", null);
 		diseases.put("Diagnosis", null);
 		diseases.put("Mysterious Gem", null);
 		diseases.put("Syringe", null);
 		diseases.put("EyeDropper", null);
 		diseases.put("Grand Panacea", null);
-		diseases.put("Inner Ear Infection", new Disease(new Symptom[]{new Nausea(), new Instability(), new Fatigue()}, "dizzy."));
-		diseases.put("Swine Flu", new Disease(new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)},"pretty sick."));
-		diseases.put("Bronchitis", new Disease(new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)},"congested and weak."));
-		diseases.put("Ebola", new Disease(new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(), new Fatigue(), new Fever(107)},"very ill! See a doctor!"));
-		diseases.put("Common Cold", new Disease(new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather."));
-		diseases.put("Zombie Flu", new Disease(new Symptom[]{new ImparedVision(), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue()},"an insatiable hunger for flesh."));
+		diseases.put("Inner Ear Infection", new Disease(500, new Symptom[]{new Nausea(), new Instability(), new Fatigue(), new Hallucinations("phosphor")}, "dizzy.", "like you've regained orientation."));
+		diseases.put("Swine Flu", new Disease(1000, new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)},"cold and irritable.", "recovered and warm."));
+		diseases.put("Bronchitis", new Disease(600, new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)},"congested and weak.", "like you can breathe again."));
+		diseases.put("Ebola", new Disease(-1, new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(2), new Fatigue(), new Hallucinations("sobel"), new Fever(107)},"like you're dieing! See a doctor!", "miraculously cured."));
+		diseases.put("Common Cold", new Disease(400, new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather.", "much better."));
+		diseases.put("Zombie Flu", new Disease(-1, new Symptom[]{new ImparedVision(1), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue(), new Hallucinations("wobble")},"an insatiable hunger for flesh.", "like brains are suddenly unappetizing."));
 	}
 
 	public static ItemVial vial;
@@ -91,7 +116,9 @@ public class HxCDiseases
 		//DiseaseConfig = new DiseaseConfig(new Configuration(event.getSuggestedConfigurationFile()));
 		hxCConfig = new HxCConfig(DiseaseConfig.class, "HxCDiseases", GlobalVariables.modConfigDir, "cfg", MODID);
 		hxCConfig.initConfiguration();
-		networkWrapper.registerMessage(PacketKey.handler.class, PacketKey.class, 1, Side.SERVER);
+		networkWrapper.registerMessage(PacketKey.handler.class, PacketKey.class, 0, Side.SERVER);
+		networkWrapper.registerMessage(PacketGui.handler.class, PacketGui.class, 1, Side.CLIENT);
+		networkWrapper.registerMessage(PacketShader.handler.class, PacketShader.class, 2, Side.CLIENT);
 		Keybinds.register();
 		fever = new DamageSource("sickness.fever").setDamageBypassesArmor();
 	}

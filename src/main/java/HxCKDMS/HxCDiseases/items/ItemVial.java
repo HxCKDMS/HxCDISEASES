@@ -2,6 +2,7 @@ package HxCKDMS.HxCDiseases.items;
 
 import HxCKDMS.HxCDiseases.Disease;
 import HxCKDMS.HxCDiseases.HxCDiseases;
+import HxCKDMS.HxCDiseases.PacketGui;
 import HxCKDMS.HxCDiseases.Utilities;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -9,14 +10,13 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.HoverEvent;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
@@ -146,15 +146,20 @@ public class ItemVial extends ItemFood{
 					HashMap<String, Disease> diseases = Utilities.getPlayerDiseases(player);
 					final String[] message = {"You currently have:"};
 					diseases.forEach((dName, dis)->{
-						message[0] += "\n\u00A7e- "+dName + "\n   \u00A77- Making you feel "+dis.feeling;
+						message[0] += "\n\u00A70- "+dName + "\n   \u00A78- Making you feel "+dis.getfeeling;
 					});
-					if(world.isRemote) {
-						ChatComponentText cct = new ChatComponentText("\u00A77[HxCDiseases]> \u00A75[Diagnosis]");
-						ChatStyle chatStyle = new ChatStyle();
-						chatStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(message[0])));
-						cct.setChatStyle(chatStyle);
-						player.addChatComponentMessage(cct);
+					if(!world.isRemote) {
+						//ChatComponentText cct = new ChatComponentText("\u00A77[HxCDiseases]> \u00A75[Diagnosis]");
+						//ChatStyle chatStyle = new ChatStyle();
+						//chatStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(message[0])));
+						//cct.setChatStyle(chatStyle);
+						//player.addChatComponentMessage(cct);
+						HxCDiseases.networkWrapper.sendTo(new PacketGui(0, message[0]), (EntityPlayerMP)player);
+						if(player.capabilities.isCreativeMode == false) {
+							player.getHeldItem().stackSize--;
+						}
 					}
+
 					break;
 			}
 

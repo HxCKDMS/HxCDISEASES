@@ -1,25 +1,21 @@
 package HxCKDMS.HxCDiseases;
 
 import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import hxckdms.hxccore.libraries.GlobalVariables;
 import hxckdms.hxccore.utilities.HxCPlayerInfoHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 
@@ -33,7 +29,9 @@ public class DiseaseHandler {
     @SubscribeEvent
     public void LivingAttack(LivingAttackEvent event) {
         if(event.entityLiving instanceof EntityPlayer && event.source.getEntity() instanceof EntityZombie){
-            applyDisease((EntityPlayer)event.entityLiving, "Zombie Flu");
+            if(((EntityPlayer) event.entityLiving).worldObj.rand.nextInt(100)<=2) {
+                applyDisease((EntityPlayer) event.entityLiving, "Zombie Flu");
+            }
         }
     }
 
@@ -41,25 +39,8 @@ public class DiseaseHandler {
 
     @SubscribeEvent
     public void playersleepinbed(PlayerSleepInBedEvent event) {
-        if(event.entityPlayer.worldObj.isDaytime()) {
-            event.entityPlayer.setPosition(event.x, event.y, event.z);
-            pRotOff = 90;
-            pHeightOff = -1;
-            pInBed = true;
-            switch(event.entityPlayer.worldObj.getBlock(event.x,event.y,event.z).getBedDirection(event.entityPlayer.worldObj,event.x,event.y,event.z)) {
-                case 0:
-                    bedAngle = 90;
-                    break;
-                case 1:
-                    bedAngle = 180;
-                    break;
-                case 2:
-                    bedAngle = 270;
-                    break;
-                case 3:
-                    bedAngle = 0;
-                    break;
-            }
+        if(event.result == EntityPlayer.EnumStatus.OK){
+
         }
     }
 
@@ -85,16 +66,16 @@ public class DiseaseHandler {
     @SubscribeEvent
     public void renderPre(RenderPlayerEvent.Pre event){
 
-        GL11.glPushMatrix();
+        /*GL11.glPushMatrix();
         GL11.glTranslatef(0,pHeightOff,0);
         GL11.glRotatef((bedAngle), 0f, 1f, 0f);
         GL11.glRotatef((pRotOff), 0f, 0f, 1f);
-        GL11.glPushMatrix();
+        GL11.glPushMatrix();*/
     }
 
     @SubscribeEvent
     public void renderPost(RenderPlayerEvent.Post event){
-        if(event.entityPlayer.getCommandSenderName().equals("wiggle1000")) {
+       /* if(event.entityPlayer.getCommandSenderName().equals("wiggle1000")) {
             ((AbstractClientPlayer) event.entityPlayer).func_152121_a(MinecraftProfileTexture.Type.CAPE, new ResourceLocation(HxCDiseases.MODID, "textures/player/cape/wiggle1000.png"));
         }
         GL11.glPopMatrix();
@@ -104,7 +85,7 @@ public class DiseaseHandler {
         GL11.glPopMatrix();
         if(pInBed){
             event.entityPlayer.renderYawOffset = 270;
-        }
+        }*/
     }
 
     @SubscribeEvent
