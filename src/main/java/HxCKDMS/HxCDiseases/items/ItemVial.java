@@ -46,6 +46,8 @@ public class ItemVial extends ItemFood{
 			}else if (itemStack.getTagCompound().hasKey("info")) {
 				list.add("Contains: "+itemStack.getTagCompound().getString("info"));
 			}
+		}else if(itemStack.getTagCompound().getString("disease").equals("Grand Panacea")){
+			list.add("\u00A76The Universal Cure\u00A77");
 		}
 		super.addInformation(itemStack,player,list,someBool);
 	}
@@ -75,12 +77,19 @@ public class ItemVial extends ItemFood{
 	@SuppressWarnings("unchecked")
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		List<ItemStack> dgs = new ArrayList<>();
-		HxCDiseases.diseases.keySet().forEach(disease -> {
+		HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
 			ItemStack stack = new ItemStack(item, 1, 0);
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("disease", disease);
+			tag.setString("disease", diseasename);
 			stack.setTagCompound(tag);
 			dgs.add(stack);
+			if(diseaseobj != null && diseaseobj.curable){
+				ItemStack stack2 = new ItemStack(item, 1, 0);
+				NBTTagCompound tag2 = new NBTTagCompound();
+				tag2.setString("disease", diseasename+"_cure");
+				stack2.setTagCompound(tag);
+				dgs.add(stack2);
+			}
 		});
 		HxCDiseases.mobs.values().forEach((mob) -> {
 			ItemStack stack = new ItemStack(item, 1, 0);
@@ -110,8 +119,11 @@ public class ItemVial extends ItemFood{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconReg) {
-		HxCDiseases.diseases.keySet().forEach(diseasename-> {
+		HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
 			icons.put(diseasename, iconReg.registerIcon(HxCDiseases.MODID + ":" + "" +diseasename.replace(" ", "").toLowerCase()));
+			if(diseaseobj != null && diseaseobj.curable) {
+				icons.put(diseasename + "_cure", iconReg.registerIcon(HxCDiseases.MODID + ":" + "" + diseasename.replace(" ", "").toLowerCase() + "_cure"));
+			}
 		});
 		icons.put("Full Syringe", iconReg.registerIcon(HxCDiseases.MODID + ":" + "syringe_blood"));
 	}
@@ -143,23 +155,22 @@ public class ItemVial extends ItemFood{
 					}
 					break;
 				case "Diagnosis":
-					HashMap<String, Disease> diseases = Utilities.getPlayerDiseases(player);
-					final String[] message = {"You currently have:"};
-					diseases.forEach((dName, dis)->{
-						message[0] += "\n\u00A70- "+dName + "\n   \u00A78- Making you feel "+dis.getfeeling;
-					});
-					if(!world.isRemote) {
+					if(!player.worldObj.isRemote) {
+						HashMap<String, Disease> diseases = Utilities.getPlayerDiseases(player);
+						final String[] message = {"You currently have:"};
+						diseases.forEach((dName, dis) -> {
+							message[0] += "\n\u00A70- " + dName + "\n   \u00A78- Making you feel " + dis.getfeeling;
+						});
 						//ChatComponentText cct = new ChatComponentText("\u00A77[HxCDiseases]> \u00A75[Diagnosis]");
 						//ChatStyle chatStyle = new ChatStyle();
 						//chatStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(message[0])));
 						//cct.setChatStyle(chatStyle);
 						//player.addChatComponentMessage(cct);
-						HxCDiseases.networkWrapper.sendTo(new PacketGui(0, message[0]), (EntityPlayerMP)player);
-						if(player.capabilities.isCreativeMode == false) {
+						HxCDiseases.networkWrapper.sendTo(new PacketGui(0, message[0]), (EntityPlayerMP) player);
+						if (!player.capabilities.isCreativeMode) {
 							player.getHeldItem().stackSize--;
 						}
 					}
-
 					break;
 			}
 
@@ -169,7 +180,7 @@ public class ItemVial extends ItemFood{
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
-		return  "item." +itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
+		return  "item." + itemStack.getTagCompound().getString("disease").replace(" ", "").toLowerCase();
 	}
 
 	@Override
@@ -229,6 +240,10 @@ public class ItemVial extends ItemFood{
 	}
 
 	public boolean applyDisease(Entity player, String disease){
-		return disease != null && Utilities.applyDisease(player, disease);
+		if(!player.worldObj.isRemote) {
+			return disease != null && Utilities.applyDisease(player, disease);
+		}
+		System.out.println("Client cannot call applyDisease");
+		return true;
 	}
 }

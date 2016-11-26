@@ -12,26 +12,25 @@ public class Disease {
     public String curefeeling = "better.";
     public int sicknessTicksRemaining = 20;
     public boolean curesOverTime = true;
+    public boolean curable = false;
 
-    public Disease(int timeCoeff, Symptom[] symptoms){
-        this.symptoms = symptoms;
+    public Disease(int timeCoeff, boolean curable, Symptom[] symptoms){
+        initialize(timeCoeff, curable, symptoms, getfeeling, curefeeling);
     }
 
-    public Disease(int timeCoeff, Symptom[] symptoms, String getfeeling, String curefeeling) {
+    public Disease(int timeCoeff, boolean curable, Symptom[] symptoms, String getfeeling, String curefeeling) {
+        initialize(timeCoeff, curable, symptoms, getfeeling, curefeeling);
+    }
+    public Disease(int timeCoeff, boolean curable,  String[] symptomNames, String getfeeling, String curefeeling) {
+        initialize(timeCoeff, curable, Utilities.GetSymptomsByNames(symptomNames), getfeeling, curefeeling);
+    }
+
+    private void initialize(int timeCoeff, boolean curable, Symptom[] symptoms, String getfeeling, String curefeeling) {
         this.symptoms = symptoms;
         this.getfeeling = getfeeling;
         this.curefeeling = curefeeling;
         sicknessTicksRemaining *= timeCoeff;
-        if(timeCoeff < 0){
-            curesOverTime = false;
-        }
-    }
-    public Disease(int timeCoeff, String[] symptomNames, String getfeeling, String curefeeling) {
-        this.symptoms = Utilities.GetSymptomsByNames(symptomNames);
-        this.getfeeling = getfeeling;
-        this.curefeeling = curefeeling;
-        sicknessTicksRemaining *= timeCoeff;
-        if(timeCoeff < 0){
+        if(timeCoeff < 0 || !curable){
             curesOverTime = false;
         }
     }
@@ -41,8 +40,8 @@ public class Disease {
             symptom.tick(player);
         });
         if(curesOverTime) {
-            if (player.isPlayerSleeping()) {
-                sicknessTicksRemaining -= 10;
+            if (player.isPlayerSleeping() && player.isPlayerFullyAsleep()) {
+                sicknessTicksRemaining -= 100;
             } else {
                 sicknessTicksRemaining--;
             }

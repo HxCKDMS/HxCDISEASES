@@ -18,14 +18,16 @@ public class Utilities {
 
     public static HashMap<String, Disease> getPlayerDiseases(EntityPlayer player) {
         HashMap<String, Disease> cDiseases = new HashMap<>();
-        String UUID = player.getUniqueID().toString();
-        File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
-        NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases");
-        HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
-            if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
-                cDiseases.put(diseasename,diseaseobj);
-            }
-        });
+        if(!player.worldObj.isRemote) {
+            NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases");
+            HxCDiseases.diseases.forEach((diseasename, diseaseobj) -> {
+                if (diseases != null) {
+                    if (diseases.hasKey(diseasename) && diseases.getBoolean(diseasename)) {
+                        cDiseases.put(diseasename, diseaseobj);
+                    }
+                }
+            });
+        }
         return cDiseases;
     }
     public static boolean applyDisease(Entity player, String disease){
@@ -64,23 +66,18 @@ public class Utilities {
             if(player instanceof EntityPlayerMP){
                 String UUID = player.getUniqueID().toString();
 
-                File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
                 NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound((EntityPlayer)player, "Diseases");
                 try {
                     if (diseases.getBoolean(disease)){
                         ((EntityPlayer) player).addChatMessage(new ChatComponentText("You're feeling "+HxCDiseases.diseases.get(disease).curefeeling));
-                        HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
-                            if(diseasename.equalsIgnoreCase(disease)) {
-                                diseaseobj.remove((EntityPlayer) player);
-                            }
-                        });
+                        HxCDiseases.diseases.get(disease).remove((EntityPlayer)player);
                         diseases.setBoolean(disease, false);
                         retval = true;
                         //player.worldObj.playSoundToNearExcept(null,"hxcdiseases:notify",3, 0.8f);
                         //player.playSound("hxcdiseases:notify",3, 0.8f);
                         Utilities.playSoundAtPlayer((EntityPlayer) player, "hxcdiseases:notify", 3, 2f + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
                     }else{
-                        System.out.println("DERP!");
+                        diseases.setBoolean(disease, false); //silently disable anyways, just in case
                     }
                     HxCPlayerInfoHandler.setTagCompound((EntityPlayer)player, "Diseases", diseases);
 

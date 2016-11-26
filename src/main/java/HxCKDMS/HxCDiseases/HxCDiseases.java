@@ -84,12 +84,12 @@ public class HxCDiseases
 		diseases.put("Syringe", null);
 		diseases.put("EyeDropper", null);
 		diseases.put("Grand Panacea", null);
-		diseases.put("Inner Ear Infection", new Disease(500, new Symptom[]{new Nausea(), new Instability(), new Fatigue(), new Hallucinations("phosphor")}, "dizzy.", "like you've regained orientation."));
-		diseases.put("Swine Flu", new Disease(1000, new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)},"cold and irritable.", "recovered and warm."));
-		diseases.put("Bronchitis", new Disease(600, new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)},"congested and weak.", "like you can breathe again."));
-		diseases.put("Ebola", new Disease(-1, new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(2), new Fatigue(), new Hallucinations("sobel"), new Fever(107)},"like you're dieing! See a doctor!", "miraculously cured."));
-		diseases.put("Common Cold", new Disease(400, new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather.", "much better."));
-		diseases.put("Zombie Flu", new Disease(-1, new Symptom[]{new ImparedVision(1), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue(), new Hallucinations("wobble")},"an insatiable hunger for flesh.", "like brains are suddenly unappetizing."));
+		diseases.put("Inner Ear Infection", new Disease(500, true, new Symptom[]{new Nausea(), new Instability(), new Fatigue(), new Hallucinations("phosphor")}, "dizzy.", "like you've regained orientation."));
+		diseases.put("Swine Flu", new Disease(1000, true, new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)},"cold and irritable.", "recovered and warm."));
+		diseases.put("Bronchitis", new Disease(600, true, new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)},"congested and weak.", "like you can breathe again."));
+		diseases.put("Ebola", new Disease(-1, false, new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(2), new Fatigue(), new Hallucinations("sobel"), new Fever(107)},"like you're dieing! See a doctor!", "miraculously cured."));
+		diseases.put("Common Cold", new Disease(400, true, new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather.", "much better."));
+		diseases.put("Zombie Flu", new Disease(-1, false, new Symptom[]{new ImparedVision(1), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue(), new Hallucinations("wobble")},"an insatiable hunger for flesh.", "like brains are suddenly unappetizing."));
 	}
 
 	public static ItemVial vial;

@@ -22,7 +22,9 @@ public class Fever implements Symptom{
     }
     @Override
     public void remove(EntityPlayer player) {
-        ph.removeModifier(HealthBuff);
+        try {
+            ph.removeModifier(HealthBuff);
+        }catch (Exception e){}
     }
 
     @Override

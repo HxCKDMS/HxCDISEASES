@@ -155,7 +155,7 @@ public class ComponentDoctor extends StructureVillagePieces.Village {
         this.placeBlockAtCurrentPosition(world, Blocks.cauldron, 0, 7, 1, 7, sbb);
         this.placeBlockAtCurrentPosition(world, Blocks.cauldron, 0, 2, 1, 1, sbb);
 
-        this.spawnVillagers(world, sbb, 0, 4, 0, 1);
+        this.spawnVillagers(world, sbb, 4, 2, 4, 1);
         return true;
     }
 

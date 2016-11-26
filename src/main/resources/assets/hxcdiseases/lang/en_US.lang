@@ -4,6 +4,11 @@ item.commoncold.name=Common Cold Vial
 item.bronchitis.name=Bronchitis Vial
 item.zombieflu.name=Zombie Flu
 item.innerearinfection.name=Inner Ear Infection
+item.swineflu_cure.name=Swine Flu Treatment
+item.commoncold_cure.name=Common Cold Remedy
+item.bronchitis_cure.name=Bronchitis Cure
+item.innerearinfection_cure.name=Ear Antibiotics
+
 item.vial.name=Vial
 item.eyedropper.name=Eye Dropper
 item.syringe.name=Syringe
