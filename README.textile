@@ -1,6 +1,6 @@
-h1.Overview
+<h1>Overview</h1>
     HxCDiseases is a WIP(Work In Progress) mod that adds various diseases, disorders, and viruses that your player can contract.
-h2.Recipes
+<h2>Recipes</h2>
     Eyedropper    
     !http://puu.sh/swTZ9/4225903e80.gif!
     Vial
@@ -9,10 +9,10 @@ h2.Recipes
     !http://puu.sh/swU0S/f0c8a172ca.gif!
     Grand Panacea
     !http://puu.sh/swU3S/8119c132a5.gif!
-h1.Features
-h2.Now: 
+<h1>Features</h1>
+<h2>Now:</h2> 
       Incubators, Diseases, and uses in biological warfare.
-h2.Later:
+<h2>Later:</h2>
       I plan to continue adding features until HxCDiseases feels complete.  
-h2.WIP
+<h2>WIP</h2>
       Both the mod and this readme are WIP(Works In Progress).
