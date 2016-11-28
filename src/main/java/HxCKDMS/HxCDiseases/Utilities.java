@@ -106,6 +106,15 @@ public class Utilities {
         return itemStack;
     }
 
+    public static ItemStack getSyringeItem(String mob){
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("disease", "Full Syringe");
+        nbt.setString("mob", mob);
+        ItemStack itemStack = new ItemStack(HxCDiseases.vial);
+        itemStack.setTagCompound(nbt);
+        return itemStack;
+    }
+
     public static Symptom resolveSymptom(String name){
         return Symptom.symptoms.get(name);
     }
@@ -136,6 +145,22 @@ public class Utilities {
                 player.getEntityWorld().spawnEntityInWorld(new HxCKDMS.HxCDiseases.entity.EntityVomitFX(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw)) * 50), (Math.tan(Math.toRadians(pitch)) * 50), (Math.sin(Math.toRadians(yaw)) * 50), disease, player));
             }
         }
+    }
+
+    public static boolean isSameDiseaseItem(ItemStack first, ItemStack second)
+    {
+        NBTTagCompound nbt1 = first.getTagCompound();
+        NBTTagCompound nbt2 = second.getTagCompound();
+        if(nbt1.hasKey("disease") && nbt2.hasKey("disease") && nbt1.getString("disease") == nbt2.getString("disease")){
+            if(nbt1.getString("disease") != "Full Syringe"){
+                return true;
+            }else{
+                if(nbt1.hasKey("mob") && nbt2.hasKey("mob") && nbt1.getString("mob") == nbt2.getString("mob")){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

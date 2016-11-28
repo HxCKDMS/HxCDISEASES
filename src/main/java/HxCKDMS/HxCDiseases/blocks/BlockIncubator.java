@@ -21,15 +21,6 @@ public class BlockIncubator extends Block {
     }
 
     @Override
-    public boolean canPlaceBlockOnSide(World p_149707_1_, int p_149707_2_, int p_149707_3_, int p_149707_4_, int side) {
-        if(side == 1) {
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    @Override
     public String getUnlocalizedName() {
         return HxCDiseases.MODID+".blockincubator";
     }

@@ -69,5 +69,23 @@
                 "stream": false
             }
         ]
+    },
+	"incuwork": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "incuwork",
+                "stream": false
+            }
+        ]
+    },
+	"fail": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "fail",
+                "stream": false
+            }
+        ]
     }
 }

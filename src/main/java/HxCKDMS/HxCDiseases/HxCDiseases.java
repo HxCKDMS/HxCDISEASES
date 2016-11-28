@@ -34,6 +34,7 @@ import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -68,6 +69,7 @@ public class HxCDiseases
 
 	public static HashMap<String, Disease> diseases = new HashMap<>();
 	public static HashMap<Class, String> mobs = new HashMap<>();
+	public static ArrayList<IncubatorRecipe> incubatorRecipes = new ArrayList<IncubatorRecipe>();
 
 	static {
 		symptoms.put("Coughing", new Coughing());
@@ -101,6 +103,11 @@ public class HxCDiseases
 		diseases.put("Ebola", new Disease(-1, false, new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(2), new Fatigue(), new Hallucinations("sobel"), new Fever(107)},"like you're dieing! See a doctor!", "miraculously cured."));
 		diseases.put("Common Cold", new Disease(400, true, new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather.", "much better."));
 		diseases.put("Zombie Flu", new Disease(-1, false, new Symptom[]{new ImparedVision(1), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue(), new Hallucinations("wobble")},"an insatiable hunger for flesh.", "like brains are suddenly unappetizing."));
+	}
+
+	public static void registerIncubatorRecipes(){
+		incubatorRecipes.add(new IncubatorRecipe(Utilities.getSyringeItem("Pig"), Utilities.getDiseaseItem("Swine Flu"), 500, 3));
+		incubatorRecipes.add(new IncubatorRecipe(Utilities.getSyringeItem("Zombie"), Utilities.getDiseaseItem("Zombie Flu"), 600, 10));
 	}
 
 	public static ItemVial vial;
@@ -162,6 +169,7 @@ public class HxCDiseases
 		MinecraftForge.EVENT_BUS.register(new DiseaseHandler());
 		FMLCommonHandler.instance().bus().register(new DiseaseHandler());
 		AddRecipes();
+		registerIncubatorRecipes();
 		proxy.init(event);
     }
 

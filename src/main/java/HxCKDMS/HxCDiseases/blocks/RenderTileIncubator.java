@@ -35,27 +35,73 @@ public class RenderTileIncubator extends TileEntitySpecialRenderer {
         Tessellator.instance.draw();
         GL11.glPopMatrix();
         renderLabel((TileEntityIncubator) tileEntity,((TileEntityIncubator) tileEntity).status ,x+0.5f,y+2,z+0.5f,25);
+        renderProgress((TileEntityIncubator) tileEntity,((TileEntityIncubator) tileEntity).progress ,x+0.5f,y+1.85d,z+0.5f,25,20);
     }
-
-    protected void renderLabel(TileEntityIncubator entity, String s, double d, double d1, double d2, int i) {
+    protected void renderProgress(TileEntityIncubator entity, float prog, double d, double d1, double d2, int i, int width) {
         double f = entity.getDistanceFrom(this.field_147501_a.staticPlayerX, this.field_147501_a.staticPlayerY, this.field_147501_a.staticPlayerZ);
         if (f > i) {
             return;
         }
         FontRenderer fontrenderer = this.field_147501_a.getFontRenderer();
         float entrot = Minecraft.getMinecraft().thePlayer.getRotationYawHead();
+        float entrotp = Minecraft.getMinecraft().thePlayer.rotationPitch;
         float f1 = 1.6F;
         float f2 = 0.01666667F * f1;
-        double angle = Math.toRadians(entrot);
-        float sin = (float)(Math.sin(angle));
-        float cos = (float)(Math.cos(angle));
-        sin = Math.round(sin*100)/100;
-        cos = Math.round(cos*100)/100;
 
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)d+(float)(sin*0.35), (float)d1, (float)d2-(float)(cos*0.35));
+        GL11.glTranslatef((float)d, (float)d1, (float)d2);
         GL11.glNormal3f(0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-1*entrot, 0, 1, 0);
+        GL11.glRotatef(entrotp, 1, 0, 0);
+        GL11.glScalef(0.3f, 0.3f, 0.3f);
+        //GL11.glRotatef(-this.tileEntityRenderer.playerYaw, 0.0F, 1.0F, 0.0F);
+        //GL11.glRotatef(this.tileEntityRenderer.playerPitch, 1.0F, 0.0F, 0.0F);
+        GL11.glScalef(-f2, -f2, f2);
+        GL11.glDisable(2896);
+        GL11.glDepthMask(false);
+        GL11.glDisable(2929);
+        GL11.glEnable(3042);
+        GL11.glBlendFunc(770, 771);
+        Tessellator tessellator = Tessellator.instance;
+        byte byte0 = 0;
+        GL11.glDisable(3553);
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA_F(0.1F, 0.0F, 0.0F, 0.5F);
+        tessellator.addVertex(-width - 1, -1 + byte0, 0.0D);
+        tessellator.addVertex(-width - 1, 8 + byte0, 0.0D);
+        tessellator.addVertex(width + 1, 8 + byte0, 0.0D);
+        tessellator.addVertex(width + 1, -1 + byte0, 0.0D);
+        tessellator.setColorRGBA_F(0.0F, 0.1F, 0.3F, 0.5F);
+        tessellator.addVertex(-width - 1, -1 + byte0, 0.0D);
+        tessellator.addVertex(-width - 1, 8 + byte0, 0.0D);
+        tessellator.addVertex(-width + (prog * (width * 2)) + 1, 8 + byte0, 0.0D);
+        tessellator.addVertex(-width + (prog * (width * 2)) + 1, -1 + byte0, 0.0D);
+        tessellator.draw();
+        //tessellator.func_78381_a();
+        GL11.glEnable(3553);
+        GL11.glEnable(2929);
+        GL11.glDepthMask(true);
+        GL11.glEnable(2896);
+        GL11.glDisable(3042);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glPopMatrix();
+    }
+    protected void renderLabel(TileEntityIncubator entity, String s, double d, double d1, double d2, int i) {
+        double f = entity.getDistanceFrom(this.field_147501_a.staticPlayerX, this.field_147501_a.staticPlayerY, this.field_147501_a.staticPlayerZ);
+        if (f > i) {
+            return;
+        }
+        FontRenderer fontrenderer = this.field_147501_a.getFontRenderer();
+        float entrot = Minecraft.getMinecraft().thePlayer.rotationYaw;
+        float entrotp = Minecraft.getMinecraft().thePlayer.rotationPitch;
+        float f1 = 1.6F;
+        float f2 = 0.01666667F * f1;
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float)d, (float)d1, (float)d2);
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(-1*entrot, 0, 1, 0);
+        GL11.glRotatef(entrotp, 1, 0, 0);
         GL11.glScalef(0.3f, 0.3f, 0.3f);
         //GL11.glRotatef(-this.tileEntityRenderer.playerYaw, 0.0F, 1.0F, 0.0F);
         //GL11.glRotatef(this.tileEntityRenderer.playerPitch, 1.0F, 0.0F, 0.0F);
