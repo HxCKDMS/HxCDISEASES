@@ -2,7 +2,7 @@
     HxCDiseases is a WIP mod that adds various diseases, disorders, and viruses that your player can contract.
 #Recipes
     Eyedropper    
-    ![test](http://puu.sh/swTZ9/4225903e80.gif)
+    !http://puu.sh/swTZ9/4225903e80.gif!
     Vial
     <img src="http://puu.sh/swU2G/a29b5681c4.gif">
     Incubator
