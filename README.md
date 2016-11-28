@@ -2,9 +2,9 @@
     HxCDiseases is a WIP mod that adds various diseases, disorders, and viruses that your player can contract.
 
 #Features
-  ##Now: 
+###Now: 
       Incubators, Diseases, and uses in biological warfare.
-  ##Later:
+###Later:
       I plan to continue adding features until HxCDiseases feels complete.
     
 #WIP
