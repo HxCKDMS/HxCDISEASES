@@ -6,6 +6,7 @@ import HxCKDMS.HxCDiseases.PacketGui;
 import HxCKDMS.HxCDiseases.Utilities;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import hxckdms.hxccore.libraries.GlobalVariables;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ItemVial extends ItemFood{
-	@SideOnly(Side.CLIENT)
 	public HashMap<String,IIcon> icons = new HashMap<>();
 
 	public ItemVial(){
@@ -48,6 +48,9 @@ public class ItemVial extends ItemFood{
 			}
 		}else if(itemStack.getTagCompound().getString("disease").equals("Grand Panacea")){
 			list.add("\u00A76The Universal Cure\u00A77");
+		}
+		if (itemStack.getTagCompound().hasKey("infotag")) {
+			list.add(itemStack.getTagCompound().getString("infotag"));
 		}
 		super.addInformation(itemStack,player,list,someBool);
 	}
@@ -214,18 +217,21 @@ public class ItemVial extends ItemFood{
 			String disease = itemStack.getTagCompound().getString("disease");
 			if (disease.equals("Syringe")) {
 				if (!itemStack.getTagCompound().hasKey("mob") || itemStack.getTagCompound().getString("mob").isEmpty()) {
-					if(HxCDiseases.mobs.containsKey(other.getClass())) {
+					if((other instanceof EntityPlayer && HxCDiseases.mobs.containsKey(other.getClass())) || (other instanceof EntityPlayer && GlobalVariables.server.isPVPEnabled())) {
 						ItemStack newStack = new ItemStack(HxCDiseases.vial, 1);
 						NBTTagCompound tag = new NBTTagCompound();
 						tag.setString("disease", "Full Syringe");
-						tag.setString("mob", HxCDiseases.mobs.get(other.getClass()));
+						tag.setString("mob", other instanceof EntityPlayer?"Player":HxCDiseases.mobs.get(other.getClass()));
+						if(other instanceof EntityPlayer){
+							tag.setString("infotag", "\u00A73"+((EntityPlayer) other).getDisplayName()+"\u00A77");
+						}
+						other.attackEntityFrom(HxCDiseases.bloodLoss, 1);
 						newStack.setTagCompound(tag);
 						if(myPlayer.inventory.addItemStackToInventory(newStack)){
 							myPlayer.inventory.decrStackSize(myPlayer.inventory.currentItem, 1);
-							myPlayer.addChatMessage(new ChatComponentText("Loaded with: " + HxCDiseases.mobs.get(other.getClass())));
+							myPlayer.addChatMessage(new ChatComponentText("Loaded with: " + (other instanceof EntityPlayer?("Player - " + ((EntityPlayer) other).getDisplayName()):HxCDiseases.mobs.get(other.getClass()))));
 						}
 					}
-
 				}
 			} else {
 				if (applyDisease(other, disease)) {

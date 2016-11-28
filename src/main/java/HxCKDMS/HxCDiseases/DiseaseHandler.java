@@ -1,8 +1,9 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCDiseases.entity.EntityVomitFX;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hxckdms.hxccore.libraries.GlobalVariables;
 import hxckdms.hxccore.utilities.HxCPlayerInfoHandler;
 import net.minecraft.client.Minecraft;
@@ -62,30 +63,16 @@ public class DiseaseHandler {
         }
     }
 
-
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void renderPre(RenderPlayerEvent.Pre event){
 
-        /*GL11.glPushMatrix();
-        GL11.glTranslatef(0,pHeightOff,0);
-        GL11.glRotatef((bedAngle), 0f, 1f, 0f);
-        GL11.glRotatef((pRotOff), 0f, 0f, 1f);
-        GL11.glPushMatrix();*/
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void renderPost(RenderPlayerEvent.Post event){
-       /* if(event.entityPlayer.getCommandSenderName().equals("wiggle1000")) {
-            ((AbstractClientPlayer) event.entityPlayer).func_152121_a(MinecraftProfileTexture.Type.CAPE, new ResourceLocation(HxCDiseases.MODID, "textures/player/cape/wiggle1000.png"));
-        }
-        GL11.glPopMatrix();
-        GL11.glTranslatef(0,-pHeightOff,0);
-        GL11.glRotatef((-bedAngle), 0f, 1f, 0f);
-        GL11.glRotatef((-pRotOff), 0f, 0f, 1f);
-        GL11.glPopMatrix();
-        if(pInBed){
-            event.entityPlayer.renderYawOffset = 270;
-        }*/
+
     }
 
     @SubscribeEvent
@@ -94,6 +81,7 @@ public class DiseaseHandler {
     }
 
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void InputEvent(InputEvent.KeyInputEvent event) {
         if(Minecraft.getMinecraft().gameSettings.keyBindDrop.getIsKeyPressed()) {
@@ -108,8 +96,6 @@ public class DiseaseHandler {
     public void OnLivingDeath(LivingDeathEvent event) {
         if (event.entityLiving instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
-            String UUID = player.getUniqueID().toString();
-            File CustomPlayerData = new File(GlobalVariables.modWorldDir, "HxC-" + UUID + ".dat");
             NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases");
             HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
                 if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
@@ -127,14 +113,5 @@ public class DiseaseHandler {
         Utilities.applyDisease(player,disease);
     }
 
-    public void vomit(EntityPlayer player, String disease) {
-        player.playSound("hxcdiseases:vomit", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
-        float baseYaw = player.getRotationYawHead()+90;
-        float basePitch = -(player.rotationPitch);
-        for(int i = 0; i<(player.worldObj.rand.nextInt(800)+200)/ (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * DiseaseConfig.uberVomit; i++) {
-            float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
-            float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
-            player.getEntityWorld().spawnEntityInWorld(new EntityVomitFX(player.worldObj, player.posX, player.posY+player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw))*50), (Math.tan(Math.toRadians(pitch))*50), (Math.sin(Math.toRadians(yaw))*50), disease, player));
-        }
-    }
+
 }

@@ -1,11 +1,12 @@
 package HxCKDMS.HxCDiseases;
 
-import HxCKDMS.HxCDiseases.GUI.GuiDiagnosis;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,11 +39,12 @@ public class PacketGui implements IMessage {
     }
 
     public static class handler implements IMessageHandler<PacketGui, IMessage> {
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketGui message, MessageContext ctx) {
             if (message.gui == 0) {
                 EntityPlayer p = Minecraft.getMinecraft().thePlayer;
-                FMLClientHandler.instance().displayGuiScreen(p, new GuiDiagnosis(message.info));
+                FMLClientHandler.instance().displayGuiScreen(p, new HxCKDMS.HxCDiseases.GUI.GuiDiagnosis(message.info));
             }
             return null;
         }

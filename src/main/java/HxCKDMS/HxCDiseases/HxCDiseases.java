@@ -1,13 +1,17 @@
 package HxCKDMS.HxCDiseases;
 
+import HxCKDMS.HxCDiseases.Proxies.CommonProxy;
 import HxCKDMS.HxCDiseases.Symptoms.*;
 import HxCKDMS.HxCDiseases.Villager.ComponentDoctor;
 import HxCKDMS.HxCDiseases.Villager.TradeHandlerDoctor;
 import HxCKDMS.HxCDiseases.Villager.VillagerDoctorHandler;
+import HxCKDMS.HxCDiseases.blocks.BlockIncubator;
+import HxCKDMS.HxCDiseases.blocks.TileEntityIncubator;
 import HxCKDMS.HxCDiseases.items.ItemVial;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -21,11 +25,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -38,10 +42,14 @@ import static HxCKDMS.HxCDiseases.Symptoms.Symptom.symptoms;
 @Mod(modid = HxCDiseases.MODID, version = HxCDiseases.VERSION, dependencies = "required-after:hxccore")
 public class HxCDiseases
 {
+
 	public static final String MODID = "hxcdiseases";
 	public static final String VERSION = "1.0";
 	@Mod.Instance(MODID)
 	public static HxCDiseases instance;
+
+	@SidedProxy(clientSide = "HxCKDMS.HxCDiseases.Proxies.ClientProxy", serverSide = "HxCKDMS.HxCDiseases.Proxies.CommonProxy")
+	public static CommonProxy proxy;
 
 	public static final UUID feverHealthUUID = UUID.fromString("f2b5a521-bca6-43d1-a07e-f2ca9f84f541");
 
@@ -54,6 +62,9 @@ public class HxCDiseases
 	public static final String[] shaderNames = {"antialias","art","bits","blobs","blobs2","blur","bumpy","color_convolve","deconverge","desaturate","flip","fxaa","green","invert","notch","ntsc","outline","pencil","phosphor","scan_pincushion","sobel","wobble"};
 
 	public static DamageSource fever;
+	public static DamageSource bloodLoss;
+
+	public static BlockIncubator blockIncubator;
 
 	public static HashMap<String, Disease> diseases = new HashMap<>();
 	public static HashMap<Class, String> mobs = new HashMap<>();
@@ -111,16 +122,19 @@ public class HxCDiseases
 			return null;
 		}
 	};
+
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		//DiseaseConfig = new DiseaseConfig(new Configuration(event.getSuggestedConfigurationFile()));
 		hxCConfig = new HxCConfig(DiseaseConfig.class, "HxCDiseases", GlobalVariables.modConfigDir, "cfg", MODID);
 		hxCConfig.initConfiguration();
 		networkWrapper.registerMessage(PacketKey.handler.class, PacketKey.class, 0, Side.SERVER);
-		networkWrapper.registerMessage(PacketGui.handler.class, PacketGui.class, 1, Side.CLIENT);
+		HxCDiseases.networkWrapper.registerMessage(PacketGui.handler.class, PacketGui.class, 1, Side.CLIENT);
 		networkWrapper.registerMessage(PacketShader.handler.class, PacketShader.class, 2, Side.CLIENT);
-		Keybinds.register();
 		fever = new DamageSource("sickness.fever").setDamageBypassesArmor();
+		bloodLoss = new DamageSource("sickness.bloodloss");
+		proxy.preInit(event);
 	}
 
 	@EventHandler
@@ -131,32 +145,24 @@ public class HxCDiseases
 				mobs.put((Class)ent, (String)name);
 			}
 		});
-    	//DECLARE--------------------------------
-    	//FLU
-		//SwineFlu = new ItemVial("Swine Flu", 10000);
-		//STDs
-		//Ebola = new ItemVial("Ebola", 10000);
-		//COMMON SICKNESSES
-		//CommonCold = new ItemVial("Common Cold", 10000);
 		vial = new ItemVial();
+		blockIncubator = new BlockIncubator();
 		tradeHandlerDoctor = new TradeHandlerDoctor();
-    	//REGISTER-------------------------------
-		//GameRegistry.registerItem(SwineFlu, "vialswineflu");
-		//GameRegistry.registerItem(Ebola, "vialebola");
-		//GameRegistry.registerItem(CommonCold, "vialcold");
 		GameRegistry.registerItem(vial,"itemvial");
 
 		VillagerRegistry.instance().registerVillagerId(villagerID);
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerID, tradeHandlerDoctor);
-		VillagerRegistry.instance().registerVillagerSkin(villagerID, new ResourceLocation(MODID,"textures/entity/villager/doctor.png"));
 
 		addVillagePiece(ComponentDoctor.class, "Doctor");
 		addVillageCreationHandler(new VillagerDoctorHandler());
 
+		GameRegistry.registerBlock(blockIncubator, "blockincubator");
+		GameRegistry.registerTileEntity(TileEntityIncubator.class, "tileincubator");
+
 		MinecraftForge.EVENT_BUS.register(new DiseaseHandler());
 		FMLCommonHandler.instance().bus().register(new DiseaseHandler());
 		AddRecipes();
-
+		proxy.init(event);
     }
 
 	void AddRecipes(){
@@ -173,12 +179,23 @@ public class HxCDiseases
 				'B', "cobblestone"
 		));
 		GameRegistry.addRecipe(new ShapedOreRecipe(Utilities.getDiseaseItem("Grand Panacea"),
-				"AAA",
-				"ACA",
+				"DDD",
+				"DCD",
 				"ABA",
 				'A', "blockGold",
+				'D', "blockDiamond",
 				'B', Utilities.getDiseaseItem("EyeDropper"),
 				'C', Utilities.getDiseaseItem("Mysterious Gem")
+		));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockIncubator),
+				"BJB",
+				"JIJ",
+				"KDK",
+				'I', Items.cauldron,
+				'D', "dustRedstone",
+				'B', Utilities.getDiseaseItem("Vial"),
+				'J', "ingotIron",
+				'K', "blockIron"
 		));
 
 	}
