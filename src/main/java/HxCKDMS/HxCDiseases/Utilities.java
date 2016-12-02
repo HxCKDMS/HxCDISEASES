@@ -151,11 +151,11 @@ public class Utilities {
     {
         NBTTagCompound nbt1 = first.getTagCompound();
         NBTTagCompound nbt2 = second.getTagCompound();
-        if(nbt1.hasKey("disease") && nbt2.hasKey("disease") && nbt1.getString("disease") == nbt2.getString("disease")){
-            if(nbt1.getString("disease") != "Full Syringe"){
+        if(nbt1.hasKey("disease") && nbt2.hasKey("disease") && nbt1.getString("disease").equals(nbt2.getString("disease"))){
+            if(!nbt1.getString("disease").equals("Full Syringe") && !nbt2.getString("disease").equals("Full Syringe")){
                 return true;
             }else{
-                if(nbt1.hasKey("mob") && nbt2.hasKey("mob") && nbt1.getString("mob") == nbt2.getString("mob")){
+                if(nbt1.hasKey("mob") && nbt2.hasKey("mob") && nbt1.getString("mob").equals(nbt2.getString("mob"))){
                     return true;
                 }
             }

@@ -94,12 +94,12 @@ public class DiseaseHandler {
 
     @SubscribeEvent
     public void OnLivingDeath(LivingDeathEvent event) {
-        if (event.entityLiving instanceof EntityPlayerMP) {
+        if (event.entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
             NBTTagCompound diseases = HxCPlayerInfoHandler.getTagCompound(player, "Diseases");
             HxCDiseases.diseases.forEach((diseasename, diseaseobj)-> {
-                if(diseases.hasKey(diseasename)&&diseases.getBoolean(diseasename)) {
-                    disableDisease(player,diseasename);
+                if(diseases != null && diseases.hasKey(diseasename) && diseases.getBoolean(diseasename)) {
+                    disableDisease(player, diseasename);
                 }
             });
         }

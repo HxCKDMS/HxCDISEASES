@@ -32,6 +32,7 @@ public class TileEntityIncubator extends TileEntity
             EntityItem item = (EntityItem)oItem;
             NBTTagCompound nbt = item.getEntityItem().getTagCompound();
             markDirty();
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             if(!processing) {
                 HxCDiseases.incubatorRecipes.forEach((IncubatorRecipe recipe) -> {
                     if (Utilities.isSameDiseaseItem(recipe.input, item.getEntityItem())) {
@@ -87,7 +88,6 @@ public class TileEntityIncubator extends TileEntity
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
-
         super.readFromNBT(tag);
         status = tag.getString("status");
         mixing = tag.getBoolean("mixing");
@@ -97,12 +97,10 @@ public class TileEntityIncubator extends TileEntity
         if(tag.hasKey("recipeIndex")) {
             making = HxCDiseases.incubatorRecipes.get(tag.getInteger("recipeIndex"));
         }
-
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tag) {
-
         super.writeToNBT(tag);
         tag.setString("status", status);
         tag.setBoolean("mixing", mixing);

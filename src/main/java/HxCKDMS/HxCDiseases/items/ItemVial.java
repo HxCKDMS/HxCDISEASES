@@ -217,7 +217,7 @@ public class ItemVial extends ItemFood{
 			String disease = itemStack.getTagCompound().getString("disease");
 			if (disease.equals("Syringe")) {
 				if (!itemStack.getTagCompound().hasKey("mob") || itemStack.getTagCompound().getString("mob").isEmpty()) {
-					if((HxCDiseases.mobs.containsKey(other.getClass())) || (other instanceof EntityPlayer && GlobalVariables.server.isPVPEnabled())) {
+					if(((HxCDiseases.mobs.containsKey(other.getClass())) || (other instanceof EntityPlayer && GlobalVariables.server.isPVPEnabled())) && ((EntityPlayer) other).getHealth() > 0 && !other.isDead) {
 						ItemStack newStack = new ItemStack(HxCDiseases.vial, 1);
 						NBTTagCompound tag = new NBTTagCompound();
 						tag.setString("disease", "Full Syringe");
