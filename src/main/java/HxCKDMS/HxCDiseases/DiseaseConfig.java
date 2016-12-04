@@ -15,6 +15,8 @@ public class DiseaseConfig {
     public static int uberVomit = 1;
     @Config.comment("Vomit Chance (Default = 1000)")
     public static int vomitChance = 1000;
+    @Config.comment("How long bodily fluids linger. (Default = 50)")
+    public static int vomitParticleLife = 50;
 
    /* public DiseaseConfig(Configuration config) {
 

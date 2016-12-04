@@ -98,18 +98,29 @@ public class Utilities {
         return retval;
     }
 
-    public static ItemStack getDiseaseItem(String disease){
+    public static ItemStack getDiseaseItem(String disease, int count){
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("disease",disease);
-        ItemStack itemStack = new ItemStack(HxCDiseases.vial);
+        ItemStack itemStack = new ItemStack(HxCDiseases.vial, count);
         itemStack.setTagCompound(nbt);
         return itemStack;
+    }
+    public static ItemStack getDiseaseItem(String disease){
+        return getDiseaseItem(disease,1);
     }
 
     public static ItemStack getSyringeItem(String mob){
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("disease", "Full Syringe");
         nbt.setString("mob", mob);
+        ItemStack itemStack = new ItemStack(HxCDiseases.vial);
+        itemStack.setTagCompound(nbt);
+        return itemStack;
+    }
+    public static ItemStack getCellCultureItem(String celltype){
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("disease", "Cell Culture");
+        nbt.setString("celltype", celltype);
         ItemStack itemStack = new ItemStack(HxCDiseases.vial);
         itemStack.setTagCompound(nbt);
         return itemStack;
@@ -134,15 +145,26 @@ public class Utilities {
 
     }
     @SideOnly(Side.CLIENT)
-    public void vomit(EntityPlayer player, String disease) {
+    public static void SpawnVomit(EntityPlayer player, String disease) {
         if(player.worldObj.isRemote) {
-            player.playSound("hxcdiseases:vomit", 1, 1 + ((player.worldObj.rand.nextFloat() - 0.5f) / 5));
             float baseYaw = player.getRotationYawHead() + 90;
             float basePitch = -(player.rotationPitch);
-            for (int i = 0; i < (player.worldObj.rand.nextInt(800) + 200) / (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * DiseaseConfig.uberVomit; i++) {
+            for (int i = 0; i < (player.worldObj.rand.nextInt(200) + 100) / (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * DiseaseConfig.uberVomit; i++) {
                 float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
                 float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
-                player.getEntityWorld().spawnEntityInWorld(new HxCKDMS.HxCDiseases.entity.EntityVomitFX(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, (Math.cos(Math.toRadians(yaw)) * 50), (Math.tan(Math.toRadians(pitch)) * 50), (Math.sin(Math.toRadians(yaw)) * 50), disease, player));
+                player.getEntityWorld().spawnEntityInWorld(new HxCKDMS.HxCDiseases.entity.EntityVomitFX(player.worldObj, player.posX, player.posY + player.getEyeHeight() - 0.2f, player.posZ, (Math.cos(Math.toRadians(yaw)) * 50), (Math.tan(Math.toRadians(pitch)) * 50), (Math.sin(Math.toRadians(yaw)) * 50), disease, player, 0.7f, 0.65f, 0.5f, 0));
+            }
+        }
+    }
+    @SideOnly(Side.CLIENT)
+    public static void SpawnDiarrhea(EntityPlayer player, String disease) {
+        if(player.worldObj.isRemote) {
+            float baseYaw = player.getRotationYawHead() - 90;
+            float basePitch = 45;
+            for (int i = 0; i < (player.worldObj.rand.nextInt(200) + 100) / (Minecraft.getMinecraft().gameSettings.particleSetting + 1) * DiseaseConfig.uberVomit; i++) {
+                float pitch = basePitch + player.worldObj.rand.nextInt(20) - 10;
+                float yaw = baseYaw + player.worldObj.rand.nextInt(20) - 10;
+                player.getEntityWorld().spawnEntityInWorld(new HxCKDMS.HxCDiseases.entity.EntityVomitFX(player.worldObj, player.posX, player.posY+1, player.posZ, (Math.cos(Math.toRadians(yaw)) * 50), (Math.tan(Math.toRadians(pitch)) * 5), (Math.sin(Math.toRadians(yaw)) * 50), disease, player, 0.9f, 0.1f, 0.75f, 1));
             }
         }
     }
@@ -151,7 +173,8 @@ public class Utilities {
     {
         NBTTagCompound nbt1 = first.getTagCompound();
         NBTTagCompound nbt2 = second.getTagCompound();
-        if(nbt1.hasKey("disease") && nbt2.hasKey("disease") && nbt1.getString("disease").equals(nbt2.getString("disease"))){
+
+        if(nbt1!=null && nbt2!=null && nbt1.hasKey("disease") && nbt2.hasKey("disease") && nbt1.getString("disease").equals(nbt2.getString("disease"))){
             if(!nbt1.getString("disease").equals("Full Syringe") && !nbt2.getString("disease").equals("Full Syringe")){
                 return true;
             }else{

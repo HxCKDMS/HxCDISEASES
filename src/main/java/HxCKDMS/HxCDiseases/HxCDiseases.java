@@ -5,8 +5,10 @@ import HxCKDMS.HxCDiseases.Symptoms.*;
 import HxCKDMS.HxCDiseases.Villager.ComponentDoctor;
 import HxCKDMS.HxCDiseases.Villager.TradeHandlerDoctor;
 import HxCKDMS.HxCDiseases.Villager.VillagerDoctorHandler;
-import HxCKDMS.HxCDiseases.blocks.BlockIncubator;
-import HxCKDMS.HxCDiseases.blocks.TileEntityIncubator;
+import HxCKDMS.HxCDiseases.blocks.culture.BlockCellCulture;
+import HxCKDMS.HxCDiseases.blocks.culture.TileEntityCellCulture;
+import HxCKDMS.HxCDiseases.blocks.incubator.BlockIncubator;
+import HxCKDMS.HxCDiseases.blocks.incubator.TileEntityIncubator;
 import HxCKDMS.HxCDiseases.items.ItemVial;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -43,7 +45,6 @@ import static HxCKDMS.HxCDiseases.Symptoms.Symptom.symptoms;
 @Mod(modid = HxCDiseases.MODID, version = HxCDiseases.VERSION, dependencies = "required-after:hxccore")
 public class HxCDiseases
 {
-
 	public static final String MODID = "hxcdiseases";
 	public static final String VERSION = "1.0";
 	@Mod.Instance(MODID)
@@ -65,11 +66,13 @@ public class HxCDiseases
 	public static DamageSource fever;
 	public static DamageSource bloodLoss;
 
-	public static BlockIncubator blockIncubator;
+    public static BlockIncubator blockIncubator;
+    public static BlockCellCulture blockCellCulture;
 
 	public static HashMap<String, Disease> diseases = new HashMap<>();
 	public static HashMap<Class, String> mobs = new HashMap<>();
-	public static ArrayList<IncubatorRecipe> incubatorRecipes = new ArrayList<IncubatorRecipe>();
+    public static ArrayList<IncubatorRecipe> incubatorRecipes = new ArrayList<IncubatorRecipe>();
+    public static ArrayList<CellCultureRecipe> cellCultureRecipes = new ArrayList<CellCultureRecipe>();
 
 	static {
 		symptoms.put("Coughing", new Coughing());
@@ -92,44 +95,51 @@ public class HxCDiseases
 		symptoms.put("Sneezes", new Sneezes());
 
 		diseases.put("Vial", null);
+		diseases.put("Scraper", null);
+		diseases.put("Petri Dish", null);
+		diseases.put("Cell Culture", null);
 		diseases.put("Diagnosis", null);
 		diseases.put("Mysterious Gem", null);
 		diseases.put("Syringe", null);
 		diseases.put("EyeDropper", null);
 		diseases.put("Grand Panacea", null);
-		diseases.put("Inner Ear Infection", new Disease(500, true, new Symptom[]{new Nausea(), new Instability(), new Fatigue(), new Hallucinations("phosphor")}, "dizzy.", "like you've regained orientation."));
-		diseases.put("Swine Flu", new Disease(1000, true, new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)},"cold and irritable.", "recovered and warm."));
-		diseases.put("Bronchitis", new Disease(600, true, new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)},"congested and weak.", "like you can breathe again."));
-		diseases.put("Ebola", new Disease(-1, false, new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(2), new Fatigue(), new Hallucinations("sobel"), new Fever(107)},"like you're dieing! See a doctor!", "miraculously cured."));
-		diseases.put("Common Cold", new Disease(400, true, new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather.", "much better."));
-		diseases.put("Zombie Flu", new Disease(-1, false, new Symptom[]{new ImparedVision(1), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue(), new Hallucinations("wobble")},"an insatiable hunger for flesh.", "like brains are suddenly unappetizing."));
+        diseases.put("Inner Ear Infection", new Disease("Inner Ear Infection", 500, true, new Symptom[]{new Nausea(), new Instability(), new Fatigue(), new Hallucinations("phosphor")}, "dizzy.", "like you've regained orientation."));
+        diseases.put("Salmonella", new Disease("Salmonella", 500, true, new Symptom[]{new Diarrhea(), new Vomiting()}, "like you have diarrhea.", "much better."));
+        diseases.put("Swine Flu", new Disease("Swine Flu", 1000, true, new Symptom[]{new DizzySpells(),new Sneezes(), new Fatigue(), new Fever(104)},"cold and irritable.", "recovered and warm."));
+		diseases.put("Bronchitis", new Disease("Bronchitis", 600, true, new Symptom[]{ new Coughing(), new Coughing(), new Coughing(), new Fever(102)},"congested and weak.", "like you can breathe again."));
+		diseases.put("Ebola", new Disease("Ebola", -1, false, new Symptom[]{new Nausea(), new Instability(), new Coughing(), new Coughing(), new ImparedVision(2), new Fatigue(), new Hallucinations("sobel"), new Fever(107)},"like you're dieing! See a doctor!", "miraculously cured."));
+		diseases.put("Common Cold", new Disease("Common Cold", 400, true, new Symptom[]{new Sneezes(), new Coughing(), new Fatigue(), new Fever(100)}, "a little under the weather.", "much better."));
+		diseases.put("Zombie Flu", new Disease("Zombie Flu", -1, false, new Symptom[]{new ImparedVision(1), new Instability(), new Nausea(), new Coughing(), new Coughing(), new Insatiability(), new Fever(108), new Fatigue(), new Hallucinations("wobble")},"an insatiable hunger for flesh.", "like brains are suddenly unappetizing."));
 	}
 
-	public static void registerIncubatorRecipes(){
-		incubatorRecipes.add(new IncubatorRecipe(Utilities.getSyringeItem("Pig"), Utilities.getDiseaseItem("Swine Flu"), 500, 3));
-		incubatorRecipes.add(new IncubatorRecipe(Utilities.getSyringeItem("Zombie"), Utilities.getDiseaseItem("Zombie Flu"), 600, 10));
-	}
+    public static void registerIncubatorRecipes(){
+        incubatorRecipes.add(new IncubatorRecipe(Utilities.getSyringeItem("Pig"), Utilities.getDiseaseItem("Swine Flu"), 500, 3));
+        incubatorRecipes.add(new IncubatorRecipe(Utilities.getSyringeItem("Zombie"), Utilities.getDiseaseItem("Zombie Flu"), 600, 10));
+    }
+    public static void registerCellCultureRecipes(){
+        cellCultureRecipes.add(new CellCultureRecipe(Utilities.getDiseaseItem("Swine Flu"), CellCultureMediumType.Bloodcells, Utilities.getDiseaseItem("Swine Flu", 2), 200, 90));
+        cellCultureRecipes.add(new CellCultureRecipe(Utilities.getDiseaseItem("Zombie Flu"), CellCultureMediumType.Bloodcells, Utilities.getDiseaseItem("Zombie Flu", 2), 200, 80));
+    }
 
 	public static ItemVial vial;
 
     public static CreativeTabs tabDiseases = new CreativeTabs("tabDiseases") {
-		@SideOnly(Side.CLIENT)
-		@Override
-	    public ItemStack getIconItemStack() {
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setString("disease","Swine Flu");
-	        ItemStack itemStack = new ItemStack(vial);
-			itemStack.setTagCompound(nbt);
-			return itemStack;
-	    }
+        @SideOnly(Side.CLIENT)
+        @Override
+        public ItemStack getIconItemStack() {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("disease", "Swine Flu");
+            ItemStack itemStack = new ItemStack(vial);
+            itemStack.setTagCompound(nbt);
+            return itemStack;
+        }
 
-		@SideOnly(Side.CLIENT)
-		@Override
-		public Item getTabIconItem() {
-			return null;
-		}
-	};
-
+        @SideOnly(Side.CLIENT)
+        @Override
+        public Item getTabIconItem() {
+            return null;
+        }
+    };
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -138,7 +148,8 @@ public class HxCDiseases
 		hxCConfig.initConfiguration();
 		networkWrapper.registerMessage(PacketKey.handler.class, PacketKey.class, 0, Side.SERVER);
 		HxCDiseases.networkWrapper.registerMessage(PacketGui.handler.class, PacketGui.class, 1, Side.CLIENT);
-		networkWrapper.registerMessage(PacketShader.handler.class, PacketShader.class, 2, Side.CLIENT);
+        networkWrapper.registerMessage(PacketShader.handler.class, PacketShader.class, 2, Side.CLIENT);
+        networkWrapper.registerMessage(PacketParticles.handler.class, PacketParticles.class, 3, Side.CLIENT);
 		fever = new DamageSource("sickness.fever").setDamageBypassesArmor();
 		bloodLoss = new DamageSource("sickness.bloodloss");
 		proxy.preInit(event);
@@ -153,7 +164,8 @@ public class HxCDiseases
 			}
 		});
 		vial = new ItemVial();
-		blockIncubator = new BlockIncubator();
+        blockIncubator = new BlockIncubator();
+        blockCellCulture = new BlockCellCulture();
 		tradeHandlerDoctor = new TradeHandlerDoctor();
 		GameRegistry.registerItem(vial,"itemvial");
 
@@ -163,17 +175,21 @@ public class HxCDiseases
 		addVillagePiece(ComponentDoctor.class, "Doctor");
 		addVillageCreationHandler(new VillagerDoctorHandler());
 
-		GameRegistry.registerBlock(blockIncubator, "blockincubator");
-		GameRegistry.registerTileEntity(TileEntityIncubator.class, "tileincubator");
+        GameRegistry.registerBlock(blockIncubator, "blockincubator");
+        GameRegistry.registerTileEntity(TileEntityIncubator.class, "tileincubator");
+
+        GameRegistry.registerBlock(blockCellCulture, "blockcellculture");
+        GameRegistry.registerTileEntity(TileEntityCellCulture.class, "tilecellculture");
 
 		MinecraftForge.EVENT_BUS.register(new DiseaseHandler());
 		FMLCommonHandler.instance().bus().register(new DiseaseHandler());
 		AddRecipes();
-		registerIncubatorRecipes();
 		proxy.init(event);
     }
 
 	void AddRecipes(){
+        registerIncubatorRecipes();
+        registerCellCultureRecipes();
 		GameRegistry.addRecipe(new ShapedOreRecipe(Utilities.getDiseaseItem("Vial"),
 				"A",
 				"A",
@@ -205,7 +221,12 @@ public class HxCDiseases
 				'J', "ingotIron",
 				'K', "blockIron"
 		));
-
+		GameRegistry.addRecipe(new ShapedOreRecipe(Utilities.getCellCultureItem("Player"),
+				"A",
+				"B",
+				'A', Utilities.getSyringeItem("Player"),
+				'B', Utilities.getDiseaseItem("Petri Dish")
+		));
 	}
 
 	public static void addVillagePiece(Class c, String s){

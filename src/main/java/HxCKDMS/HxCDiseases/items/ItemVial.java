@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class ItemVial extends ItemFood{
 	public HashMap<String,IIcon> icons = new HashMap<>();
@@ -135,13 +134,7 @@ public class ItemVial extends ItemFood{
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		String disease = stack.getTagCompound().getString("disease");
 		if(HxCDiseases.diseases.get(disease) != null) {
-			if (Objects.equals(disease, "Syringe")) {
-				String mob = stack.getTagCompound().getString("mob");
-
-			} else if (Objects.equals(disease, "Full Syringe")) {
-				String mob = stack.getTagCompound().getString("mob");
-
-			} else if (!disease.equals("Vial") && !disease.equals("EyeDropper")) {
+			if (!disease.equals("Vial") && !disease.equals("EyeDropper")) {
 				if (player.capabilities.isCreativeMode) {
 					this.onEaten(stack, world, player);
 				} else {
@@ -150,6 +143,12 @@ public class ItemVial extends ItemFood{
 			}
 		}else{
 			switch (disease){
+				case "Syringe":
+					if(stack.stackSize == 1) {
+						stack = Utilities.getSyringeItem("Player");
+						stack.getTagCompound().setString("infotag", player.getDisplayName());
+					}
+					break;
 				case "Grand Panacea":
 					if (player.capabilities.isCreativeMode) {
 						this.onEaten(stack, world, player);

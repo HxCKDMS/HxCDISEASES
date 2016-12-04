@@ -1,4 +1,4 @@
-package HxCKDMS.HxCDiseases.blocks;
+package HxCKDMS.HxCDiseases.blocks.incubator;
 
 
 import HxCKDMS.HxCDiseases.HxCDiseases;

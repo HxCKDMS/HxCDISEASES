@@ -20,7 +20,8 @@ item.mysteriousgem.name=Mysterious Gem
 death.attack.sickness.fever=%1$s died of a fever.
 death.attack.sickness.bloodloss=%1$s died of blood loss.
 itemGroup.tabDiseases=HxC Diseases
-hxcdiseases.blockincubator.name=Incubator
+hxcdiseases.blockincubator.name=Strain Isolator
+hxcdiseases.blockcellculture.name=Cell Culture
 
 
 key.fart=Fart

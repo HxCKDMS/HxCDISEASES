@@ -1,11 +1,12 @@
 package HxCKDMS.HxCDiseases.Symptoms;
 
 
+import HxCKDMS.HxCDiseases.Disease;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class Sneezes implements Symptom{
     @Override
-    public void tick(EntityPlayer player){
+    public void tick(EntityPlayer player, Disease disease){
         if(player.worldObj.rand.nextInt(900)==1) {
             player.playSound("hxcdiseases:sneeze", 1, 1+((player.worldObj.rand.nextFloat()-0.5f)/5));
             player.addVelocity(0,0.2f,0);

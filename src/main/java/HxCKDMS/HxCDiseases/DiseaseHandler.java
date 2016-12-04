@@ -2,6 +2,7 @@ package HxCKDMS.HxCDiseases;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import hxckdms.hxccore.libraries.GlobalVariables;
@@ -10,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemFood;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -17,6 +19,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
 import java.io.File;
 
@@ -36,7 +39,14 @@ public class DiseaseHandler {
         }
     }
 
-
+    @SubscribeEvent
+    public void onPlayerUseitem(PlayerUseItemEvent event) {
+        if(event.item.getItem() instanceof ItemFood){
+            if(LanguageRegistry.instance().getStringLocalization(event.item.getUnlocalizedName(),"en_US").toLowerCase().contains("raw") && event.entityPlayer.worldObj.rand.nextInt(100)<50){
+                applyDisease(event.entityPlayer, "Salmonella");
+            }
+        }
+    }
 
     @SubscribeEvent
     public void playersleepinbed(PlayerSleepInBedEvent event) {

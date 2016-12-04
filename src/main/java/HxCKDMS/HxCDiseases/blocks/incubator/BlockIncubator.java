@@ -1,4 +1,4 @@
-package HxCKDMS.HxCDiseases.blocks;
+package HxCKDMS.HxCDiseases.blocks.incubator;
 
 
 import HxCKDMS.HxCDiseases.HxCDiseases;
@@ -7,7 +7,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockIncubator extends Block {
 
@@ -23,6 +25,14 @@ public class BlockIncubator extends Block {
     @Override
     public String getUnlocalizedName() {
         return HxCDiseases.MODID+".blockincubator";
+    }
+
+    @Override
+    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+        if(side == ForgeDirection.UP){
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -1,7 +1,8 @@
-package HxCKDMS.HxCDiseases.blocks;
+package HxCKDMS.HxCDiseases.blocks.culture;
 
+import HxCKDMS.HxCDiseases.CellCultureMediumType;
+import HxCKDMS.HxCDiseases.CellCultureRecipe;
 import HxCKDMS.HxCDiseases.HxCDiseases;
-import HxCKDMS.HxCDiseases.IncubatorRecipe;
 import HxCKDMS.HxCDiseases.Utilities;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -14,27 +15,26 @@ import net.minecraft.util.AxisAlignedBB;
 
 import java.util.Random;
 
-public class TileEntityIncubator extends TileEntity
+public class TileEntityCellCulture extends TileEntity
 {
     public String status = "";
-    public boolean mixing = false;
     public boolean processing = false;
     public int progressCounter = 0;
+    public CellCultureMediumType mediumType = CellCultureMediumType.None;
     public int target = 0;
     public float progress = 0;
-    public IncubatorRecipe making;
+    public CellCultureRecipe making;
     private Random rand = new Random();
 
     @Override
     public void updateEntity() {
-        mixing = processing;
-        worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(xCoord,yCoord+1,zCoord,xCoord+1,yCoord+2,zCoord+1)).forEach((Object oItem)->{
+        worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(xCoord+0.2f,yCoord,zCoord+0.2f,xCoord+0.8f,yCoord+0.5f,zCoord+0.8f)).forEach((Object oItem)->{
             EntityItem item = (EntityItem)oItem;
             NBTTagCompound nbt = item.getEntityItem().getTagCompound();
             markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             if(!processing) {
-                HxCDiseases.incubatorRecipes.forEach((IncubatorRecipe recipe) -> {
+                HxCDiseases.cellCultureRecipes.forEach((CellCultureRecipe recipe) -> {
                     if (Utilities.isSameDiseaseItem(recipe.input, item.getEntityItem())) {
                         if(!processing) {
                             if (item.getEntityItem().stackSize > 1) {
@@ -52,7 +52,6 @@ public class TileEntityIncubator extends TileEntity
                         progressCounter = 0;
                         processing = true;
                         target = recipe.time;
-                        worldObj.playSoundEffect(xCoord, yCoord, zCoord, "hxcdiseases:incuwork", 1.5f, 1);
                     }
 
                 });
@@ -62,7 +61,7 @@ public class TileEntityIncubator extends TileEntity
             if(progressCounter<target){
                 progressCounter++;
                 if(progressCounter%60==0 && progressCounter < target-60){
-                    worldObj.playSoundEffect(xCoord,yCoord,zCoord,"hxcdiseases:incuwork",1.5f,1);
+                    //worldObj.playSoundEffect(xCoord,yCoord,zCoord,"hxcdiseases:incuwork",1.5f,1);
                     markDirty();
                 }
             }else{
@@ -72,6 +71,7 @@ public class TileEntityIncubator extends TileEntity
                     } else {
                         fail();
                     }
+                    setMedium(CellCultureMediumType.None);
                 }
                 processing = false;
             }
@@ -81,21 +81,27 @@ public class TileEntityIncubator extends TileEntity
 
     private void outputItem(){
         status = "Culture grown successfully!";
-        EntityItem item = new EntityItem(worldObj, xCoord, yCoord + 2, zCoord, making.output.copy());
+        EntityItem item = new EntityItem(worldObj, xCoord, yCoord + 1, zCoord, making.output.copy());
         worldObj.spawnEntityInWorld(item);
         markDirty();
+    }
+
+    public void setMedium(CellCultureMediumType type){
+        this.mediumType = type;
+        markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         status = tag.getString("status");
-        mixing = tag.getBoolean("mixing");
         processing = tag.getBoolean("processing");
         progressCounter = tag.getInteger("progressCounter");
+        setMedium(CellCultureMediumType.values()[tag.getInteger("mediumtype")]);
         target = tag.getInteger("target");
         if(tag.hasKey("recipeIndex")) {
-            making = HxCDiseases.incubatorRecipes.get(tag.getInteger("recipeIndex"));
+            making = HxCDiseases.cellCultureRecipes.get(tag.getInteger("recipeIndex"));
         }
     }
 
@@ -103,12 +109,12 @@ public class TileEntityIncubator extends TileEntity
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         tag.setString("status", status);
-        tag.setBoolean("mixing", mixing);
         tag.setBoolean("processing", processing);
         tag.setInteger("progressCounter", progressCounter);
         tag.setInteger("target", target);
+        tag.setInteger("mediumtype", mediumType.ordinal());
         if(making!=null) {
-            tag.setInteger("recipeIndex", HxCDiseases.incubatorRecipes.indexOf(making));
+            tag.setInteger("recipeIndex", HxCDiseases.cellCultureRecipes.indexOf(making));
         }
     }
 

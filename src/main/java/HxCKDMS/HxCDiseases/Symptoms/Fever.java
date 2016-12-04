@@ -1,6 +1,7 @@
 package HxCKDMS.HxCDiseases.Symptoms;
 
 
+import HxCKDMS.HxCDiseases.Disease;
 import HxCKDMS.HxCDiseases.HxCDiseases;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -16,7 +17,7 @@ public class Fever implements Symptom{
         temperature = temp;
     }
     @Override
-    public void tick(EntityPlayer player) {
+    public void tick(EntityPlayer player, Disease disease) {
         counter++;
 
     }

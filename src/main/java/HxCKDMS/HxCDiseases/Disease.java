@@ -13,23 +13,25 @@ public class Disease {
     public int sicknessTicksRemaining = 20;
     public boolean curesOverTime = true;
     public boolean curable = false;
+    public String name = "";
 
-    public Disease(int timeCoeff, boolean curable, Symptom[] symptoms){
-        initialize(timeCoeff, curable, symptoms, getfeeling, curefeeling);
+    public Disease(String name, int timeCoeff, boolean curable, Symptom[] symptoms){
+        initialize(name, timeCoeff, curable, symptoms, getfeeling, curefeeling);
     }
 
-    public Disease(int timeCoeff, boolean curable, Symptom[] symptoms, String getfeeling, String curefeeling) {
-        initialize(timeCoeff, curable, symptoms, getfeeling, curefeeling);
+    public Disease(String name, int timeCoeff, boolean curable, Symptom[] symptoms, String getfeeling, String curefeeling) {
+        initialize(name, timeCoeff, curable, symptoms, getfeeling, curefeeling);
     }
-    public Disease(int timeCoeff, boolean curable,  String[] symptomNames, String getfeeling, String curefeeling) {
-        initialize(timeCoeff, curable, Utilities.GetSymptomsByNames(symptomNames), getfeeling, curefeeling);
+    public Disease(String name, int timeCoeff, boolean curable,  String[] symptomNames, String getfeeling, String curefeeling) {
+        initialize(name, timeCoeff, curable, Utilities.GetSymptomsByNames(symptomNames), getfeeling, curefeeling);
     }
 
-    private void initialize(int timeCoeff, boolean curable, Symptom[] symptoms, String getfeeling, String curefeeling) {
+    private void initialize(String name, int timeCoeff, boolean curable, Symptom[] symptoms, String getfeeling, String curefeeling) {
         this.symptoms = symptoms;
         this.getfeeling = getfeeling;
         this.curefeeling = curefeeling;
         sicknessTicksRemaining *= timeCoeff;
+        this.name = name;
         if(timeCoeff < 0 || !curable){
             curesOverTime = false;
         }
@@ -37,7 +39,7 @@ public class Disease {
     public void tick(EntityPlayer player)
     {
         Arrays.stream(symptoms).forEach(symptom-> {
-            symptom.tick(player);
+            symptom.tick(player, this);
         });
         if(curesOverTime) {
             if (player.isPlayerSleeping() && player.isPlayerFullyAsleep()) {

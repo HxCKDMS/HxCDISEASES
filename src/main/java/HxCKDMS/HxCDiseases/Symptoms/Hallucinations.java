@@ -1,6 +1,7 @@
 package HxCKDMS.HxCDiseases.Symptoms;
 
 
+import HxCKDMS.HxCDiseases.Disease;
 import HxCKDMS.HxCDiseases.HxCDiseases;
 import HxCKDMS.HxCDiseases.PacketShader;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,7 @@ public class Hallucinations implements Symptom{
         this.effect = effect;
     }
     @Override
-    public void tick(EntityPlayer player) {
+    public void tick(EntityPlayer player, Disease disease) {
 
     }
     @Override
